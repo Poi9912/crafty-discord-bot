@@ -1,0 +1,19 @@
+{
+  "name": "crafty-dicord-integration",
+  "version": "0.0.1",
+  "description": "Discord bot to get status and send commands to your crafty managed minecraft server",
+  "keywords": [
+    "minecraft",
+    "crafty",
+    "discord",
+    "integration",
+    "status"
+  ],
+  "license": "ISC",
+  "author": "Poi9912",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
