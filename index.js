@@ -30,14 +30,15 @@ async function registerCommands() {
   const guildId = process.env.DISCORD_GUILD_ID;
 
   try {
-    console.log('Clearing existing slash commands...');
+    //#console.log('Clearing existing slash commands...');
+    //await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
     if (guildId) {
-      await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), { body: [] });
+      //await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), { body: [] });
       console.log('Registering slash commands to guild...');
       await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), { body: commands });
       console.log(`Successfully registered ${commands.length} slash commands to guild`);
     } else {
-      await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
+      //await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
       console.log('Registering slash commands globally...');
       await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
       console.log(`Successfully registered ${commands.length} slash commands globally`);
@@ -75,7 +76,7 @@ for (const file of handlerFiles) {
   }
 }
 
-client.on('clientReady', () => {
+client.on('clientReady', (c) => {
   registerCommands();
 });
 

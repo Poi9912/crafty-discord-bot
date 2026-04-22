@@ -14,10 +14,11 @@ module.exports = {
     if (!commandFile) return;
 
     try {
-      await commandFile.execute(message);
+      console.log(`Executing prefix command: ${command} with args: ${args.join(' ')}`);
+      await commandFile.executePrefix(message);
     } catch (error) {
       console.error(error);
-      message.reply({ content: '❌ Error executing command', ephemeral: true });
+      message.reply({ content: 'Error executing command', flags: [MessageFlags.Ephemeral] });
     }
   },
 };
