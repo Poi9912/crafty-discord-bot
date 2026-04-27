@@ -42,7 +42,7 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',1000);
-        const playerList = response.split('players:')[1]?.trim() || "Whitelist is empty";
+        const playerList = response.split('player(s):')[1]?.trim() || "Whitelist is empty";
         return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
@@ -82,7 +82,7 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',1000);
-        const playerList = response.split('players:')[1]?.trim() || "Whitelist is empty";
+        const playerList = response.split('player(s):')[1]?.trim() || "Whitelist is empty";
         return message.reply({ content: `Whitelisted players: ${playerList}`,flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return message.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
