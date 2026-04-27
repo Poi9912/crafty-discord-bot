@@ -41,7 +41,8 @@ module.exports = {
     }
     if (action === 'list') {
       try {
-        const response = await sendConsoleCommandWithResponse('whitelist list',1000);
+        const response = await sendConsoleCommandWithResponse('whitelist list',200);
+        console.log("Whitelist command full Response:", response);
         const fullLog = Array.isArray(response) ? response.join('\n') : response;
         const match = fullLog.match(/whitelisted player(s):\s*(.*)/i);
         let playerList = "None";
@@ -87,6 +88,7 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',200);
+        console.log("Whitelist command full Response:", response);
         const fullLog = Array.isArray(response) ? response.join('\n') : response;
         const match = fullLog.match(/whitelisted player(s):\s*(.*)/i);
         let playerList = "None";
