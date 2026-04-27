@@ -11,18 +11,20 @@ module.exports = {
     await interaction.deferReply();
     try {
       const status = await getServerStatus();
-      await interaction.editReply({ embeds: [mcStatusEmbed(status)] });
-    } catch {
+      return interaction.editReply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
+    } catch (error){
       console.error('Error getting status from Crafty:', error);
+      return interaction.editReply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
     }
   },
 
   async executePrefix(message) {
     try {
       const status = await getServerStatus();
-      await message.reply({ embeds: [mcStatusEmbed(status)] });
-    } catch {
+      return message.reply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
+    } catch (error) {
       console.error('Error getting status from Crafty:', error);
+      return message.reply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
     }
   },
 };
