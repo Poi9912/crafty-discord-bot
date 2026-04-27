@@ -19,6 +19,7 @@ steps:
         [registry."letf.local:3000"]
           http = true
           insecure = true
+      network_mode: host
 when:
   - event: [tag]
   - event: [push]
