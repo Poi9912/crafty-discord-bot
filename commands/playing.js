@@ -8,7 +8,7 @@ module.exports = {
     .setDescription('Check the list of players currently playing on the Minecraft server'),
 
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
     try {
       const status = await getServerStatus();
       const color = '#0099ff';
@@ -18,13 +18,12 @@ module.exports = {
       status.player_list.forEach(player => {
         fields.push({ name: player, value: '', inline: true });
       });
-      return interaction.reply({ embeds:
+      return interaction.editReply({ embeds:
         [standardEmbed(color, title, description, fields)],
-        flags: [MessageFlags.Ephemeral],
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);
-      return interaction.reply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
+      return interaction.editReply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 

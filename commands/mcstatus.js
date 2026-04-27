@@ -8,13 +8,13 @@ module.exports = {
     .setDescription('Check the Minecraft server status'),
 
   async execute(interaction) {
-    await interaction.deferReply();
+    await interaction.deferReply( {flags: [MessageFlags.Ephemeral]} );
     try {
       const status = await getServerStatus();
-      return interaction.reply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ embeds: [mcStatusEmbed(status)] });
     } catch (error){
       console.error('Error getting status from Crafty:', error);
-      return interaction.reply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ content: 'Error fetching server status from Crafty.'});
     }
   },
 
@@ -24,7 +24,7 @@ module.exports = {
       return message.reply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
     } catch (error) {
       console.error('Error getting status from Crafty:', error);
-      return message.reply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
+      return message.reply({ content: 'Error fetching server status from Crafty.', flags: [MessageFlags.Ephemeral] });
     }
   },
 };

@@ -20,13 +20,13 @@ module.exports = {
         .setRequired(false)),
 
   async execute(interaction) {
+    await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
     const adminRoleId = process.env.DISCORD_MINECRAFT_ADMIN_ROLE;
 
     // Verify Role ID authorization
     if (!interaction.member.roles.cache.has(adminRoleId)) {
-      return interaction.reply({
-        content: 'You do not have the required permissions to manage the whitelist.',
-        flags: [MessageFlags.Ephemeral]
+      return interaction.editReply({
+        content: 'You do not have the required permissions to manage the whitelist.'
       });
     }
 
@@ -35,7 +35,7 @@ module.exports = {
 
     console.log('Whitelist command start')
     if (action !== 'list' && !player) {
-      return interaction.reply({
+      return interaction.editReply({
         content: 'Player name is required for add/remove actions.',
         flags: [MessageFlags.Ephemeral]
       });
@@ -49,10 +49,10 @@ module.exports = {
         if (match && match[1]) {
           playerList = match[1].trim();
         }
-        return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
+        return interaction.editReply({ content: `Whitelisted players: ${playerList}` });
       } catch (error) {
         console.log('Whitelist error:', error);
-        return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
+        return interaction.editReply({ content: 'Failed to retrieve whitelist from Crafty.' });
       }
     } else {
       try {
