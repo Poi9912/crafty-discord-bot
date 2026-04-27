@@ -45,7 +45,6 @@ module.exports = {
       });
     }
 
-    const message = interaction.options.getString('message');
     const sender = interaction.user.username;
 
     try {
