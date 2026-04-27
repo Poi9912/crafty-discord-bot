@@ -31,7 +31,7 @@ module.exports = {
     }
 
     const action = interaction.options.getString('action');
-    const player = interaction.options.getString('player');
+    const player = interaction.options.getString('player') || '';
 
     if (action !== 'list' && !player) {
       return interaction.reply({
@@ -41,9 +41,9 @@ module.exports = {
     }
     if (action === 'list') {
       try {
-        const response = await sendConsoleCommandWithResponse('whitelist list');
-        const playerList = response.split(':')[1].trim();
-        return interaction.reply({ content: `Whitelisted players: ${playerList}` });
+        const response = await sendConsoleCommandWithResponse('whitelist list',1000);
+        const playerList = response.split('players:')[1]?.trim() || "Whitelist is empty";
+        return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
       }
@@ -71,7 +71,7 @@ module.exports = {
     }
 
     const action = message.content.split(' ')[1];
-    const player = message.content.split(' ')[2];
+    const player = message.content.split(' ')[2] || '';
 
     if (action !== 'list' && !player) {
       return message.reply({
@@ -81,8 +81,8 @@ module.exports = {
     }
     if (action === 'list') {
       try {
-        const response = await sendConsoleCommandWithResponse('whitelist list');
-        const playerList = response.split(':')[1].trim();
+        const response = await sendConsoleCommandWithResponse('whitelist list',1000);
+        const playerList = response.split('players:')[1]?.trim() || "Whitelist is empty";
         return message.reply({ content: `Whitelisted players: ${playerList}`,flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return message.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
