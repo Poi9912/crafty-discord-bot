@@ -1,0 +1,13 @@
+depends_on:
+  - build-and-push
+steps:
+  - name: deploy-in-dokploy
+    image: curlimages/curl
+    when:
+      branch: main
+      event: push
+    commands:
+      - curl -X POST $dokploy_webhook
+    environment:
+      dokploy_webhook:
+        from_secret: dokploy_webhook
