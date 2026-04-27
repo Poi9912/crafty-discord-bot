@@ -1,5 +1,8 @@
+kind: pipeline
+name: deploy
+
 depends_on:
-  - build-and-push
+  - build
 steps:
   - name: deploy-in-dokploy
     image: curlimages/curl

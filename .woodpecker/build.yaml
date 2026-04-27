@@ -1,5 +1,5 @@
-# kind: pipeline
-# name: build-and-push
+kind: pipeline
+name: build
 
 steps:
   - name: build-and-push
@@ -19,11 +19,6 @@ steps:
         [registry."letf.local:3000"]
           http = true
           insecure = true
-  - name: calculate-version
-    image: ghcr.io/caarlos0/svu
-    commands:
-      - export NEXT_VERSION=$(svu next)
-      - echo "Next version is $NEXT_VERSION"
 when:
   - event: [tag]
   - event: [push]
