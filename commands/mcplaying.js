@@ -18,11 +18,13 @@ module.exports = {
       status.player_list.forEach(player => {
         fields.push({ name: player, value: '', inline: true });
       });
-      await interaction.editReply({ embeds:
-        [standardEmbed(color, title, description, fields)]
+      return interaction.editReply({ embeds:
+        [standardEmbed(color, title, description, fields)],
+        flags: [MessageFlags.Ephemeral],
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);
+      return interaction.editReply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 
@@ -36,11 +38,13 @@ module.exports = {
       status.player_list.forEach(player => {
         fields.push({ name: player, value: '', inline: true });
       });
-      await message.reply({ embeds:
-        [standardEmbed(color, title, description, fields)]
+      return message.reply({ embeds:
+        [standardEmbed(color, title, description, fields)],
+        flags: [MessageFlags.Ephemeral],
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);
+      return message.reply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 };
