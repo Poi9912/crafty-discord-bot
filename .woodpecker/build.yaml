@@ -19,5 +19,6 @@ steps:
       network_mode: host
 when:
   - event: [tag]
+  - event: [manual]
   - event: [push]
     branch: [main]
