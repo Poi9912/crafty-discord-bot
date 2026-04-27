@@ -64,7 +64,7 @@ async function sendConsoleCommandWithResponse(cmd,waitMs=1000) {
   });
   await new Promise(resolve => setTimeout(resolve, waitMs));
   const response = await getRecentLogs()
-  return response.data.data.slice(-10).join('\n');
+  return response.data.data.slice(-5).join('\n');
 }
 
 //get last 20 lines of server console

@@ -33,14 +33,17 @@ module.exports = {
     const action = interaction.options.getString('action');
     const player = interaction.options.getString('player') || '';
 
+    console.log('Whitelist command start')
     if (action !== 'list' && !player) {
       return interaction.reply({
         content: 'Player name is required for add/remove actions.',
         flags: [MessageFlags.Ephemeral]
       });
+      console.log('Whitelist inside if')
     }
     if (action === 'list') {
       try {
+        console.log('Whitelist case list')
         const response = await sendConsoleCommandWithResponse('whitelist list',200);
         console.log("Whitelist command full Response:", response);
         const fullLog = Array.isArray(response) ? response.join('\n') : response;
@@ -55,6 +58,7 @@ module.exports = {
       }
     } else {
       try {
+        console.log('Whitelist case else')
         await sendConsoleCommand(`whitelist ${action} ${player}`);
         await interaction.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
         await sendConsoleCommand(`whitelist reload`);
