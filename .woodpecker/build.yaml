@@ -3,7 +3,7 @@ name: build
 
 steps:
   - name: build-and-push
-    image: woodpeckerci/plugin-docker-buildx
+    image: plugins/docker
     settings:
       registry: letf.local:3000
       repo: letf.local:3000/poi/minecraft-discord-bot
@@ -15,10 +15,7 @@ steps:
       password:
         from_secret: registry_password
       insecure: true
-      buildkit_config: |
-        [registry."letf.local:3000"]
-          http = true
-          insecure = true
+      daemon_off: false
       network_mode: host
 when:
   - event: [tag]
