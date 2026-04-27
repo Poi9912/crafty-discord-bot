@@ -4,8 +4,8 @@ services:
     container_name: minecraft-discord-bot
     restart: unless-stopped
     environment:
-      - DISCORD_TOKEN=${{environment.DISCORD_TOKEN}}
-      - DISCORD_MINECRAFT_ADMIN_ROLE=${{environment.DISCORD_MINECRAFT_ADMIN_ROLE}}
-      - CRAFTY_URL=${{environment.CRAFTY_URL}}
-      - CRAFTY_TOKEN=${{environment.CRAFTY_TOKEN}}
-      - CRAFTY_MC_INSTANCE=${{environment.CRAFTY_MC_INSTANCE}}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_MINECRAFT_ADMIN_ROLE=${DISCORD_MINECRAFT_ADMIN_ROLE}
+      - CRAFTY_URL=${CRAFTY_URL}
+      - CRAFTY_TOKEN=${CRAFTY_TOKEN}
+      - CRAFTY_MC_INSTANCE=${CRAFTY_MC_INSTANCE}
