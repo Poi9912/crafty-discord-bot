@@ -42,7 +42,12 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',1000);
-        const playerList = response.split('player(s):')[1]?.trim() || "Whitelist is empty";
+        const fullLog = Array.isArray(response) ? response.join('\n') : response;
+        const match = fullLog.match(/whitelisted players:\s*(.*)/i);
+        let playerList = "None";
+        if (match && match[1]) {
+          playerList = match[1].trim();
+        }
         return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
@@ -82,7 +87,12 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',1000);
-        const playerList = response.split('player(s):')[1]?.trim() || "Whitelist is empty";
+        const fullLog = Array.isArray(response) ? response.join('\n') : response;
+        const match = fullLog.match(/whitelisted players:\s*(.*)/i);
+        let playerList = "None";
+        if (match && match[1]) {
+          playerList = match[1].trim();
+        }
         return message.reply({ content: `Whitelisted players: ${playerList}`,flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return message.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
