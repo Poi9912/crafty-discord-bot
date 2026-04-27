@@ -6,7 +6,7 @@ module.exports = {
   name: Events.ClientReady,
   once: true,
   execute(client) {
-    console.log(`Ready! Logged in as ${client.user.tag}`);
+    console.log(`\n\nReady! Logged in as ${client.user.tag}`);
     updateBotPresence(client);
     setInterval(() => updateBotPresence(client), 30000);
   },
