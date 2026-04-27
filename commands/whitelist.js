@@ -39,32 +39,29 @@ module.exports = {
         content: 'Player name is required for add/remove actions.',
         flags: [MessageFlags.Ephemeral]
       });
-      console.log('Whitelist inside if')
     }
     if (action === 'list') {
       try {
-        console.log('Whitelist case list')
         const response = await sendConsoleCommandWithResponse('whitelist list',200);
-        console.log("Whitelist command full Response:", response);
         const fullLog = Array.isArray(response) ? response.join('\n') : response;
-        const match = fullLog.match(/whitelisted player(s):\s*(.*)/i);
+        const match = fullLog.match(/whitelisted player.*?:\s*(.*)/i);
         let playerList = "None";
         if (match && match[1]) {
           playerList = match[1].trim();
         }
         return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
       } catch (error) {
+        console.log('Whitelist error:', error);
         return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
       }
     } else {
       try {
-        console.log('Whitelist case else')
         await sendConsoleCommand(`whitelist ${action} ${player}`);
         await interaction.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
         await sendConsoleCommand(`whitelist reload`);
       } catch (error) {
-        await interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
         console.error('Error sending command to Crafty:', error);
+        return interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
       }
     }
   },
@@ -92,25 +89,25 @@ module.exports = {
     if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',200);
-        console.log("Whitelist command full Response:", response);
         const fullLog = Array.isArray(response) ? response.join('\n') : response;
-        const match = fullLog.match(/whitelisted player(s):\s*(.*)/i);
+        const match = fullLog.match(/whitelisted player.*?:\s*(.*)/i);
         let playerList = "None";
         if (match && match[1]) {
           playerList = match[1].trim();
         }
-        return message.reply({ content: `Whitelisted players: ${playerList}`,flags: [MessageFlags.Ephemeral] });
+        return interaction.reply({ content: `Whitelisted players: ${playerList}`, flags: [MessageFlags.Ephemeral] });
       } catch (error) {
-        return message.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
+        console.log('Whitelist error:', error);
+        return interaction.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
       }
     } else {
       try {
         await sendConsoleCommand(`whitelist ${action} ${player}`);
-        await message.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\``, flags: [MessageFlags.Ephemeral] });
+        await interaction.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
         await sendConsoleCommand(`whitelist reload`);
       } catch (error) {
-        await message.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
         console.error('Error sending command to Crafty:', error);
+        return interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
       }
     }
   },
