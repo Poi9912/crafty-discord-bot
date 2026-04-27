@@ -8,13 +8,13 @@ steps:
     image: curlimages/curl
     when:
       branch: main
-      event: push
+      event: [push,tag,manual]
     commands:
       - curl -X POST $dokploy_webhook
     environment:
       dokploy_webhook:
         from_secret: dokploy_webhook
 when:
-  - event: [tag]
+  - event: [tag,manual]
   - event: [push]
     branch: [main]

@@ -18,6 +18,6 @@ steps:
       daemon_off: false
       network_mode: host
 when:
-  - event: [tag]
+  - event: [tag,manual]
   - event: [push]
     branch: [main]
