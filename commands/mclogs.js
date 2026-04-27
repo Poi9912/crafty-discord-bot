@@ -17,7 +17,6 @@ module.exports = {
 
     try {
         const logs = await getRecentLogs();
-        // Slicing to 1900 to ensure it fits in a Discord code block (2000 limit)
         return interaction.editReply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
       console.error('Error getting logs from Crafty:', error);
@@ -36,7 +35,6 @@ module.exports = {
 
     try {
         const logs = await getRecentLogs();
-        // Slicing to 1900 to ensure it fits in a Discord code block (2000 limit)
         return message.reply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
         console.error('Error getting logs from Crafty:', error);
