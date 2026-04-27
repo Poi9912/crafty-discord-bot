@@ -18,10 +18,10 @@ module.exports = {
     try {
         const logs = await getRecentLogs();
         // Slicing to 1900 to ensure it fits in a Discord code block (2000 limit)
-        await interaction.editReply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
+        return interaction.editReply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
-        await interaction.editReply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
-        console.error('Error getting logs from Crafty:', error);
+      console.error('Error getting logs from Crafty:', error);
+      return interaction.editReply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 
@@ -37,10 +37,10 @@ module.exports = {
     try {
         const logs = await getRecentLogs();
         // Slicing to 1900 to ensure it fits in a Discord code block (2000 limit)
-        await message.reply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
+        return message.reply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
-        await message.reply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
         console.error('Error getting logs from Crafty:', error);
+        return message.reply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 };
