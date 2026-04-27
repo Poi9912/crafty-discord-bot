@@ -8,11 +8,11 @@ module.exports = {
 
   async execute(interaction) {
     const embed = statusEmbed(interaction.client);
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
   },
 
   async executePrefix(message) {
     const embed = statusEmbed(message.client);
-    await message.reply({ embeds: [embed] });
+    await message.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
   },
 };

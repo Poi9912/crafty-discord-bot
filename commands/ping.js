@@ -8,11 +8,11 @@ module.exports = {
 
   async execute(interaction) {
     const embed = pingEmbed(interaction.client.ws.ping);
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
   },
 
   async executePrefix(message) {
     const embed = pingEmbed(message.client.ws.ping);
-    await message.reply({ embeds: [embed] });
+    await message.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
   },
 };

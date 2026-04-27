@@ -17,10 +17,10 @@ module.exports = {
 
     try {
         const logs = await getRecentLogs();
-        return interaction.editReply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
+        return interaction.reply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
       console.error('Error getting logs from Crafty:', error);
-      return interaction.editReply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ content: 'Error fetching logs from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 

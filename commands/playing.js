@@ -18,13 +18,13 @@ module.exports = {
       status.player_list.forEach(player => {
         fields.push({ name: player, value: '', inline: true });
       });
-      return interaction.editReply({ embeds:
+      return interaction.reply({ embeds:
         [standardEmbed(color, title, description, fields)],
         flags: [MessageFlags.Ephemeral],
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);
-      return interaction.editReply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
 

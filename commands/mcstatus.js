@@ -11,10 +11,10 @@ module.exports = {
     await interaction.deferReply();
     try {
       const status = await getServerStatus();
-      return interaction.editReply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ embeds: [mcStatusEmbed(status)], flags: [MessageFlags.Ephemeral] });
     } catch (error){
       console.error('Error getting status from Crafty:', error);
-      return interaction.editReply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
+      return interaction.reply({ content: 'Error fetching server status from Crafty', flags: [MessageFlags.Ephemeral] });
     }
   },
 
