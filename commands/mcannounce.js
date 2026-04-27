@@ -27,7 +27,7 @@ module.exports = {
 
     try {
       await sendConsoleCommand(`say From ${sender}: ${message}`);
-      await interaction.reply({ content: `Successfully executed: \`say From ${sender}: ${message}\`` });
+      await interaction.reply({ content: `Successfully executed: \`say From ${sender}: ${message}\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
       await interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
       console.error('Error sending command to Crafty:', error);
@@ -50,7 +50,7 @@ module.exports = {
 
     try {
       await sendConsoleCommand(`say From ${sender}: ${message}`);
-      await interaction.reply({ content: `Successfully executed: \`say From ${sender}: ${message}\`` });
+      await interaction.reply({ content: `Successfully executed: \`say From ${sender}: ${message}\``, flags: [MessageFlags.Ephemeral] });
     } catch (error) {
       await interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
       console.error('Error sending command to Crafty:', error);

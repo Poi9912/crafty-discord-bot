@@ -83,14 +83,14 @@ module.exports = {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list');
         const playerList = response.split(':')[1].trim();
-        return message.reply({ content: `Whitelisted players: ${playerList}` });
+        return message.reply({ content: `Whitelisted players: ${playerList}`,flags: [MessageFlags.Ephemeral] });
       } catch (error) {
         return message.reply({ content: 'Failed to retrieve whitelist from Crafty.', flags: [MessageFlags.Ephemeral] });
       }
     } else {
       try {
         await sendConsoleCommand(`whitelist ${action} ${player}`);
-        await message.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
+        await message.reply({ content: `Successfully executed: \`whitelist ${action} ${player}\``, flags: [MessageFlags.Ephemeral] });
         await sendConsoleCommand(`whitelist reload`);
       } catch (error) {
         await message.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
