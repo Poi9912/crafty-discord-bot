@@ -1,0 +1,5 @@
+services:
+  discord-bot:
+    image: letf.local:3000/poi/minecraft-discord-bot:latest
+    container_name: minecraft-discord-bot
+    restart: unless-stopped
