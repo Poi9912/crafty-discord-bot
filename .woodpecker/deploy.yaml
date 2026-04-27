@@ -15,6 +15,6 @@ steps:
       dokploy_webhook:
         from_secret: dokploy_webhook
 when:
-  - event: [tag, manual]
+  - event: [tag]
   - event: [push]
     branch: [main]
