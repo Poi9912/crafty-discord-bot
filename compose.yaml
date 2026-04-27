@@ -8,3 +8,4 @@ services:
       - DISCORD_MINECRAFT_ADMIN_ROLE=${{environment.DISCORD_MINECRAFT_ADMIN_ROLE}}
       - CRAFTY_URL=${{environment.CRAFTY_URL}}
       - CRAFTY_TOKEN=${{environment.CRAFTY_TOKEN}}
+      - CRAFTY_MC_INSTANCE=${{environment.CRAFTY_MC_INSTANCE}}
