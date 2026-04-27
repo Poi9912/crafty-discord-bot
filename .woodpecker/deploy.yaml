@@ -14,3 +14,7 @@ steps:
     environment:
       dokploy_webhook:
         from_secret: dokploy_webhook
+when:
+  - event: [tag, manual]
+  - event: [push]
+    branch: [main]
