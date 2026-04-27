@@ -56,6 +56,16 @@ async function sendConsoleCommand(cmd) {
   });
 }
 
+async function sendConsoleCommandWithResponse(cmd) {
+  await crafty.post(`/api/v2/servers/${SERVER_ID}/stdin`, cmd, {
+    headers: {
+      'Content-Type': 'text/plain'
+    }
+  });
+  const response = await crafty.get(`/api/v2/servers/${SERVER_ID}/logs`);
+  return response.data.data.slice(-1).join('\n');
+}
+
 //get last 20 lines of server console
 async function getRecentLogs() {
   const response = await crafty.get(`/api/v2/servers/${SERVER_ID}/logs`);
