@@ -8,7 +8,7 @@ function content(status) {
   const description = status.empty ? 'No players online.' : `Players: ${status.players}`;
   const fields = [];
   status.player_list.forEach(player => {
-    fields.push({ name: player, value: '', inline: true });
+    fields.push({ name: player, value: '', inline: false });
   });
   return { color, title, description, fields };
 }
