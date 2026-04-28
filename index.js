@@ -30,7 +30,7 @@ async function registerCommands() {
   const guildId = process.env.DISCORD_GUILD_ID;
 
   try {
-    //#console.log('Clearing existing slash commands...');
+    //console.log('Clearing existing slash commands...');
     //await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
     if (guildId) {
       //await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), { body: [] });

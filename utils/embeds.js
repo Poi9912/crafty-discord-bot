@@ -33,6 +33,5 @@ const standardEmbed = (color, title, description, fields) => {
 module.exports = {
   pingEmbed,
   statusEmbed,
-  mcStatusEmbed,
   standardEmbed,
 };
