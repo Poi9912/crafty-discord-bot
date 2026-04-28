@@ -36,7 +36,7 @@ async function getServerStatus() {
     players: `${stats.online}/${stats.max}`,
     version: stats.version,
     empty: stats.online!=0? false : true,
-    cpu: stats.cpu,
+    cpu: `${stats.cpu} %`,
     ram: memoryUsageGB,
     player_list: playerListResponse,
     MOTD: mtod,
