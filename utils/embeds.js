@@ -20,18 +20,6 @@ const statusEmbed = (client) => {
     .setTimestamp();
 };
 
-const mcStatusEmbed = (status) => {
-  return new EmbedBuilder()
-    .setColor(status.online ? '#00ff00' : '#ff0000')
-    .setTitle('Minecraft Server Status')
-    .addFields(
-      { name: 'Status', value: status.online ? '🟢 Online' : '🔴 Offline', inline: true },
-      { name: 'Players', value: `👥 ${status.players}`, inline: true },
-      { name: 'Version', value: `⚙️ ${status.version}`, inline: true }
-    )
-    .setTimestamp();
-};
-
 const standardEmbed = (color, title, description, fields) => {
   const embed = new EmbedBuilder()
     .setColor(color)
