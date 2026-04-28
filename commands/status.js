@@ -5,7 +5,7 @@ const { standardEmbed } = require('../utils/embeds.js');
 function content(status) {
   const color = status.online ? '#00ff00' : '#ff0000';
   const title = 'Minecraft Server Status';
-  const description = '';
+  const description = null;
   const fields = [
     { name: 'Status', value: status.online ? '🟢 Online' : '🔴 Offline', inline: false },
     { name: 'Players', value: `👥 ${status.players}`, inline: false },
