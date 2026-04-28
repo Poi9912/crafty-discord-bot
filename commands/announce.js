@@ -3,7 +3,7 @@ const { sendConsoleCommand, sendConsoleCommandWithResponse} = require('../contro
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('mcannounce')
+    .setName('announce')
     .setDescription('Send a message to all players on the Minecraft server')
     .addStringOption(opt =>
       opt.setName('message')
@@ -31,28 +31,6 @@ module.exports = {
     } catch (error) {
       console.error('Error sending command to Crafty:', error);
       return interaction.editReply({ content: 'Failed to send command to Crafty.'});
-    }
-  },
-
-  async executePrefix(message) {
-    const adminRoleId = process.env.DISCORD_MINECRAFT_ADMIN_ROLE;
-
-    // Verify Role ID authorization
-    if (!interaction.member.roles.cache.has(adminRoleId)) {
-      return interaction.reply({
-        content: 'You do not have the required permissions to send announcements.',
-        flags: [MessageFlags.Ephemeral]
-      });
-    }
-
-    const sender = interaction.user.username;
-
-    try {
-      await sendConsoleCommand(`say From ${sender}: ${message}`);
-      return interaction.reply({ content: `Successfully executed: \`say From ${sender}: ${message}\``, flags: [MessageFlags.Ephemeral] });
-    } catch (error) {
-      console.error('Error sending command to Crafty:', error);
-      return interaction.reply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
     }
   },
 };

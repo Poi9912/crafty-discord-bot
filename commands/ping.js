@@ -17,11 +17,6 @@ module.exports = {
 
   async execute(interaction) {
     const embed = standardEmbed(content(interaction.client.ws.ping));
-    await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-  },
-
-  async executePrefix(message) {
-    const embed = standardEmbed(content(message.client.ws.ping));
-    await message.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
+    return interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
   },
 };

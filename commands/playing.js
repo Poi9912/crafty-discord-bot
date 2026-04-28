@@ -31,17 +31,4 @@ module.exports = {
       return interaction.editReply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },
-
-  async executePrefix(message) {
-    try {
-      const status = await getServerStatus();
-      const { color, title, description, fields } = content(status);
-      return message.reply({ embeds:
-        [standardEmbed(color, title, description, fields)], flags: [MessageFlags.Ephemeral],
-      });
-    } catch (error) {
-      console.error('Error getting players from Crafty:', error);
-      return message.reply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
-    }
-  },
 };

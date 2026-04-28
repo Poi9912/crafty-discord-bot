@@ -36,15 +36,4 @@ module.exports = {
       return interaction.editReply({ content: 'Error fetching server status from Crafty.'});
     }
   },
-
-  async executePrefix(message) {
-    try {
-      const status = await getServerStatus();
-      const { color, title, description, fields } = content(status);
-      return message.reply({ embeds: [standardEmbed(color, title, description, fields)], flags: [MessageFlags.Ephemeral] });
-    } catch (error) {
-      console.error('Error getting status from Crafty:', error);
-      return message.reply({ content: 'Error fetching server status from Crafty.', flags: [MessageFlags.Ephemeral] });
-    }
-  },
 };
