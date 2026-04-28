@@ -27,7 +27,7 @@ async function getServerStatus() {
   const playerListResponse = JSON.parse(cleanStringPlayers) || [];
   const description = stats.desc.replace(/§./g, '');
   const mtod = description.trim().replace(/\s+/g, ' ');
-  const memoryUsageGB = (stats.mem / 1024 / 1024 / 1024 ).toFixed(2)+"GB";
+  const memoryUsageGB = (stats.mem / 1024 / 1024 / 1024 ).toFixed(2)+" GB";
   const utcDateStarted = new Date(stats.started.replace(' ', 'T') + 'Z');
   const msSinceLastBoot = new Date(Date.now() - utcDateStarted.getTime());
   const timeSinceLastBoot = msSinceLastBoot.toISOString().substr(11, 8);
@@ -36,7 +36,7 @@ async function getServerStatus() {
     players: `${stats.online}/${stats.max}`,
     version: stats.version,
     empty: stats.online!=0? false : true,
-    cpu: `${stats.cpu} %`,
+    cpu: stats.cpu,
     ram: memoryUsageGB,
     player_list: playerListResponse,
     MOTD: mtod,
