@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getServerStatus } = require('../controllers/crafty.js');
-const { mcStatusEmbed } = require('../utils/embeds.js');
+const { standardEmbed } = require('../utils/embeds.js');
 
 function content(status) {
   const color = status.online ? '#00ff00' : '#ff0000';
