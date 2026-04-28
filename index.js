@@ -80,4 +80,14 @@ client.on('clientReady', (c) => {
   registerCommands();
 });
 
+function handleExit() {
+  client.user.setStatus('invisible');
+  console.warn('\n\nBot is shutting down...');
+  client.destroy();
+  process.exit(0);
+}
+
+process.on('SIGINT', handleExit);
+process.on('SIGTERM', handleExit);
+
 client.login(process.env.DISCORD_TOKEN);
