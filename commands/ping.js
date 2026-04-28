@@ -16,7 +16,9 @@ module.exports = {
     .setDescription('Replies with bot latency'),
 
   async execute(interaction) {
-    const embed = standardEmbed(content(interaction.client.ws.ping));
-    return interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
+    await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+    const content = content(interaction.client.ws.ping);
+    const embed = standardEmbed(content);
+    return interaction.editReply({ embeds: [embed] });
   },
 };
