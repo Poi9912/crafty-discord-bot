@@ -2,6 +2,17 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { getServerStatus } = require('../controllers/crafty.js');
 const { mcStatusEmbed, standardEmbed } = require('../utils/embeds.js');
 
+function content(status) {
+  const color = '#0099ff';
+  const title = status.MOTD;
+  const description = status.empty ? 'No players online.' : `Players: ${status.players}`;
+  const fields = [];
+  status.player_list.forEach(player => {
+    fields.push({ name: player, value: '', inline: true });
+  });
+  return { color, title, description, fields };
+}
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('playing')
@@ -11,15 +22,9 @@ module.exports = {
     await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
     try {
       const status = await getServerStatus();
-      const color = '#0099ff';
-      const title = status.MOTD;
-      const description = status.empty ? 'No players online.' : `Players: ${status.players}`;
-      const fields = [];
-      status.player_list.forEach(player => {
-        fields.push({ name: player, value: '', inline: true });
-      });
+      const { color, title, description, fields } = content(status);
       return interaction.editReply({ embeds:
-        [standardEmbed(color, title, description, fields)],
+        [standardEmbed(color, title, description, fields)]
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);
@@ -30,16 +35,9 @@ module.exports = {
   async executePrefix(message) {
     try {
       const status = await getServerStatus();
-      const color = '#0099ff';
-      const title = status.MOTD;
-      const description = status.empty ? 'No players online.' : `Players: ${status.players}`;
-      const fields = [];
-      status.player_list.forEach(player => {
-        fields.push({ name: player, value: '', inline: true });
-      });
+      const { color, title, description, fields } = content(status);
       return message.reply({ embeds:
-        [standardEmbed(color, title, description, fields)],
-        flags: [MessageFlags.Ephemeral],
+        [standardEmbed(color, title, description, fields)], flags: [MessageFlags.Ephemeral],
       });
     } catch (error) {
       console.error('Error getting players from Crafty:', error);

@@ -7,14 +7,15 @@ function content(status) {
   const title = 'Minecraft Server Status';
   const description = '';
   const fields = [
-    { name: 'Status', value: status.online ? '🟢 Online' : '🔴 Offline', inline: true },
-    { name: 'Players', value: `👥 ${status.players}`, inline: true },
-    { name: 'Version', value: `⚙️ ${status.version}`, inline: true },
-    { name: 'CPU Usage', value: `⚡ ${status.cpu}%`, inline: true },
-    { name: 'RAM Usage', value: `🧠 ${status.ram}`, inline: true },
-    { name: 'Crash Status', value: status.crashed ? '💥 Crashed' : '✅ Stable', inline: true },
-    { name: 'Uptime', value: `⏱️ ${status.uptime}`, inline: true },
-    { name: 'Last Boot', value: `🖥️ ${status.last_boot}`, inline: true },
+    { name: 'Status', value: status.online ? '🟢 Online' : '🔴 Offline', inline: false },
+    { name: 'Players', value: `👥 ${status.players}`, inline: false },
+    { name: 'Version', value: `⚙️ ${status.version}`, inline: false },
+    { name: 'CPU Usage', value: `⚡ ${status.cpu}%`, inline: false },
+    { name: 'RAM Usage', value: `🧠 ${status.ram}`, inline: false },
+    { name: 'Crash Status', value: status.crashed ? '💥 Crashed' : '✅ Stable', inline: false },
+    { name: 'Starting', value: status.starting ? '🚀 Starting' : '🛑 Not Starting', inline: false },
+    { name: 'Uptime', value: `⏱️ ${status.uptime}`, inline: false },
+    { name: 'Last Boot', value: `🖥️ ${status.last_boot}`, inline: false },
   ]
   return { color, title, description, fields };
 }
