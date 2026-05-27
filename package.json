@@ -1,6 +1,6 @@
 {
   "name": "crafty-dicord-integration",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "Discord bot to get status and send commands to your crafty managed minecraft server",
   "keywords": [
     "minecraft",
