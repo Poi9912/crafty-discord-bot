@@ -118,7 +118,7 @@ describe('whitelist command', () => {
 
     expect(sendConsoleCommandWithResponse).toHaveBeenCalledWith('whitelist on', 200);
     expect(interaction.editReply).toHaveBeenCalledWith({
-      content: 'Whitelist status updated, but unable to confirm status from Crafty, consult the server logs.',
+      content: 'Whitelist turned on.',
     });
   });
 

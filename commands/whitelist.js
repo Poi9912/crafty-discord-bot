@@ -13,11 +13,12 @@ function whitelistContent(log) {
 
 function whitelistEnableDisable(log) {
   const fullLog = Array.isArray(log) ? log.join('\n') : log;
-  const match = fullLog.match(/Whitelist is now turned.*?:\s*(.*)/i);
+  const match = fullLog.match(/Whitelist is now turned\s*(on|off)\b/i);
   let whitelistStatus = "unknown";
   if (match && match[1]) {
-    whitelistStatus = match[1].trim();
+    whitelistStatus = match[1].trim().toLowerCase();
   }
+  console.log('Parsed whitelist status:', whitelistStatus);
   return whitelistStatus; //returns "on", "off" or "unknown"
 }
 
