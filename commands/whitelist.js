@@ -55,12 +55,24 @@ module.exports = {
     const action = interaction.options.getString('action');
     const player = interaction.options.getString('player') || '';
 
-    if (action !== 'list' && !player) {
+    if ((action === 'add' || action === 'remove') && !player) {
       return interaction.editReply({
         content: 'Player name is required for add/remove actions.',
         flags: [MessageFlags.Ephemeral]
       });
-    } if (action === 'list') {
+    }
+
+    if ((action === 'add' || action === 'remove') && player) {
+      try {
+        await sendConsoleCommand(`whitelist ${action} ${player}`);
+        return interaction.editReply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
+      } catch (error) {
+        console.log('Error sending command to Crafty:', error);
+        return interaction.editReply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
+      }
+    }
+
+    if (action === 'list') {
       try {
         const response = await sendConsoleCommandWithResponse('whitelist list',200);
         const playerList = whitelistContent(response);
@@ -69,7 +81,8 @@ module.exports = {
         console.log('Whitelist error:', error);
         return interaction.editReply({ content: 'Failed to retrieve whitelist from Crafty.' });
       }
-    } if (action === 'on' || action === 'off') {
+    } 
+    if (action === 'on' || action === 'off') {
       try {
         const response = await sendConsoleCommandWithResponse(`whitelist ${action}`,200);
         const whitelistStatus = whitelistEnableDisable(response);
@@ -82,14 +95,9 @@ module.exports = {
         console.log('Whitelist error:', error);
         return interaction.editReply({ content: 'Failed to update whitelist status on Crafty.' });
       }
-    } else {
-      try {
-        await sendConsoleCommand(`whitelist ${action} ${player}`);
-        return interaction.editReply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
-      } catch (error) {
-        console.error('Error sending command to Crafty:', error);
-        return interaction.editReply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
-      }
     }
   },
+
+  whitelistEnableDisable,
+  whitelistContent,
 };

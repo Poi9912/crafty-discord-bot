@@ -67,7 +67,7 @@ async function sendConsoleCommandWithResponse(cmd,waitMs=1000) {
   return response.data.data.slice(-1).join('\n');
 }
 
-//get last 20 lines of server console
+//get last 15 lines of server console
 async function getRecentLogs() {
   const response = await crafty.get(`/api/v2/servers/${SERVER_ID}/logs`);
   return response.data.data.slice(-15).join('\n');

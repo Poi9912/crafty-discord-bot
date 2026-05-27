@@ -32,7 +32,7 @@ module.exports = {
       const { color, title, description, fields } = content(status);
       return interaction.editReply({ embeds: [standardEmbed(color, title, description, fields)] });
     } catch (error){
-      console.error('Error getting status from Crafty:', error);
+      console.log('Error getting status from Crafty:', error);
       return interaction.editReply({ content: 'Error fetching server status from Crafty.'});
     }
   },

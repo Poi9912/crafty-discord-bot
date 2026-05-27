@@ -21,9 +21,8 @@ module.exports = {
       const embed = standardEmbed(color, title, description, fields);
       return interaction.editReply({ embeds: [embed] });
     } catch (error) {
-      console.error('Error executing ping command:', error);
+      console.log('Error executing ping command:', error);
       return interaction.editReply({ content: 'Failed to retrieve ping information.' });
     }
-
   },
 };

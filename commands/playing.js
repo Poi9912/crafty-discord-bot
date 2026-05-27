@@ -27,7 +27,7 @@ module.exports = {
         [standardEmbed(color, title, description, fields)]
       });
     } catch (error) {
-      console.error('Error getting players from Crafty:', error);
+      console.log('Error getting players from Crafty:', error);
       return interaction.editReply({ content: 'Error fetching player list from Crafty Controller.', flags: [MessageFlags.Ephemeral] });
     }
   },

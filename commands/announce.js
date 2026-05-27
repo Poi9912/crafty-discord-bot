@@ -29,7 +29,7 @@ module.exports = {
       await sendConsoleCommand(`say From ${sender}: ${message}`);
       return interaction.editReply({ content: `Successfully executed: \`say From ${sender}: ${message}\``});
     } catch (error) {
-      console.error('Error sending command to Crafty:', error);
+      console.log('Error sending command to Crafty:', error);
       return interaction.editReply({ content: 'Failed to send command to Crafty.'});
     }
   },

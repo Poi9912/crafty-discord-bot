@@ -18,7 +18,7 @@ module.exports = {
         const logs = await getRecentLogs();
         return interaction.editReply({ content: `\`\`\`\n${logs.substring(0, 1900)}\n\`\`\`` });
     } catch (error) {
-      console.error('Error getting logs from Crafty:', error);
+      console.log('Error getting logs from Crafty:', error);
       return interaction.editReply({ content: 'Error fetching logs from Crafty.' });
     }
   },
