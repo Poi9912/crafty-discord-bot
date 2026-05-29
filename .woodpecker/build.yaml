@@ -10,6 +10,7 @@ steps:
   - name: bump-version
     image: node:lts-alpine
     commands:
+      - apk add --no-cache git
       - git checkout main
       - git config user.name $forgejo_bot_username
       - git config user.email $forgejo_bot_email
