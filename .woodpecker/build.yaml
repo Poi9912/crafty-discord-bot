@@ -11,6 +11,7 @@ steps:
     image: node:lts-alpine
     commands:
       - apk add --no-cache git
+      - git config --global --add safe.directory '*'
       - git checkout main
       - git config user.name $forgejo_bot_username
       - git config user.email $forgejo_bot_email
