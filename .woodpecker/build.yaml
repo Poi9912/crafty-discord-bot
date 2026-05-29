@@ -8,7 +8,7 @@ steps:
       run:
         - test
   - name: bump-version
-    image: node:alpine-latest
+    image: node:lts-alpine
     commands:
       - git checkout main
       - git config user.name $forgejo_bot_username
