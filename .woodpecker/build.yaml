@@ -2,6 +2,30 @@ kind: pipeline
 name: build
 
 steps:
+  - name: test
+    image: codeberg.org/woodpecker-plugins/node-pm
+    settings:
+      run:
+        - test
+  - name: bump-version
+    image: node:alpine-latest
+    commands:
+      - git checkout main
+      - git config user.name $forgejo_bot_username
+      - git config user.email $forgejo_bot_email
+      - npm config set message "%s [skip ci]"
+      - git remote set origin http://oauth2:$${forgejo_bot_token}@letf.local:3000/poi/minecraft-discord-bot.git
+      - npm run release
+    when:
+      event: push
+      branch: main
+    environment:
+      forgejo_bot_token:
+        from_bot_secret: forgejo_bot_token
+      forgejo_bot_username:
+        from_bot_secret: forgejo_bot_username
+      forgejo_bot_email:
+        from_bot_secret: forgejo_bot_email
   - name: build-and-push
     image: plugins/docker
     settings:
