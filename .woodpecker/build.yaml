@@ -8,9 +8,8 @@ steps:
       run:
         - test
   - name: bump-version
-    image: node:lts-alpine
+    image: node:lts
     commands:
-      - apk add --no-cache git
       - git config --global --add safe.directory '*'
       - git checkout main
       - git config user.name $forgejo_bot_username
