@@ -39,10 +39,10 @@ jobs:
           insecure = true
           EOF
           echo "Logging into Registry $REGISTRY..."
-          echo "Logging into Registry $REGISTRY..."
-          echo "${{ env.FORGEJO_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY \
-            -u "${{ env.FORGEJO_ACTOR }}" \
+          echo "${{ secrets.BOT_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY \
+            -u "${{ secrets.BOT_USERNAME }}" \
             --password-stdin \
+            --tls-verify=false \
             --authfile=/tmp/podman-auth.json
       - name: Build and Push Docker Image
         run: |
