@@ -39,7 +39,7 @@ jobs:
           echo "Registry credentials populated via file injection layout."
       - name: Build and Push Docker Image
         run: |
-          CLEAN_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          CLEAN_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "Using tag: $CLEAN_TAG"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
