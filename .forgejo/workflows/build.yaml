@@ -8,6 +8,7 @@ jobs:
       image: node:lts-alpine
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+        - /root/.containermanagers:/root/.containermanagers
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
@@ -24,7 +25,18 @@ jobs:
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
           echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
-          echo "${{ env.FORGEJO_TOKEN }}" | docker login "$REGISTRY" -u ${{ env.FORGEJO_ACTOR }} --password-stdin
+          AUTH_TOKEN=$(echo -n "${{ env.FORGEJO_ACTOR }}:${{ env.FORGEJO_TOKEN }}" | base64 | tr -d '\n')
+          mkdir -p ~/.docker
+          cat <<EOF > ~/.docker/config.json
+          {
+            "auths": {
+              "$REGISTRY": {
+                "auth": "$AUTH_TOKEN"
+              }
+            }
+          }
+          EOF
+          echo "Registry credentials populated via file injection layout."
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
