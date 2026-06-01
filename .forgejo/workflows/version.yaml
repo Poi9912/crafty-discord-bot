@@ -3,10 +3,12 @@ on:
   workflow_call:
     outputs:
       new_tag:
-        value: ${{ steps.create_tag.outputs.NEW_TAG }}
+        value: ${{ jobs.bump-version.outputs.computed_tag }}
 jobs:
   bump-version:
     runs-on: docker
+    outputs:
+      computed_tag: ${{ steps.create_tag.outputs.NEW_TAG }}
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
