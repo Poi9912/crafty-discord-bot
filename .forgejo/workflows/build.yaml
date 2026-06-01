@@ -1,11 +1,14 @@
 name: build docker image
 
 on:
-  workflow_call:
-    inputs:
-      tag_name:
-        required: true
-        type: string
+  workflow_run:
+    workflows: ["version"]
+    types:
+      - completed
+    events:
+      - push
+    branches:
+      - main
 jobs:
   build-push:
     runs-on: docker
@@ -15,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Configure Local HTTP Registry
         run: |
-          REGISTRY_HOST=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
+          REGISTRY_HOST=$(echo "${{ env.FORGEJO_REGISTRY_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
           echo "REGISTRY_HOST=$REGISTRY_HOST" >> $FORGEJO_ENV
           sudo mkdir -p /etc/docker
           echo "{\"insecure-registries\": [\"$REGISTRY_HOST\"]}" | sudo tee /etc/docker/daemon.json
@@ -32,7 +35,3 @@ jobs:
           # Standard image push steps over insecure connection channel
           docker push $IMAGE_PATH:$CLEAN_TAG
           docker push $IMAGE_PATH:latest
-  deploy:
-    needs: build-push
-    uses: ./.forgejo/workflows/deploy.yaml
-    secrets: inherit

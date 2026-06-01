@@ -1,10 +1,15 @@
 name: version
+
 on:
-  workflow_call:
-    outputs:
-      new_tag:
-        description: 'New tag version created'
-        value: ${{ steps.version.outputs.new_tag }}
+  workflow_run:
+    workflows: ["tests"]
+    types:
+      - completed
+    events:
+      - push
+    branches:
+      - main
+
 jobs:
   bump-version:
     runs-on: docker
@@ -32,9 +37,3 @@ jobs:
           git config user.email "curiosity@letf.local"
           git tag ${{ steps.bump-version.outputs.new_tag }}
           git push origin ${{ steps.bump-version.outputs.new_tag }}
-  build:
-    needs: bump-version
-    uses: ./.forgejo/workflows/build.yaml
-    with:
-      tag_name: ${{ needs.bump-version.outputs.new_tag }}
-    secrets: inherit

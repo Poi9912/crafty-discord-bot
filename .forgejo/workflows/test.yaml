@@ -17,8 +17,3 @@ jobs:
         run: npm i --include=dev
       - name: Run tests
         run: npm test
-  version-bump:
-    needs: test
-    if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_REF == 'refs/heads/main'
-    uses: ./.forgejo/workflows/version.yaml
-    secrets: inherit
