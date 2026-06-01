@@ -1,0 +1,32 @@
+name: Auto Versioning
+on:
+  push:
+    branches:
+      - main
+jobs:
+  bump-version:
+    runs-on: docker
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Next tag
+        id: create_tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0 --tags "v*.*.*" 2>/dev/null || echo "v0.0.0")
+          echo "Current latest tag: $LATEST_TAG"
+          VERSION=${LATEST_TAG#v}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_TAG="v$MAJOR.$MINOR.$NEW_PATCH"
+          echo "Next tag: $NEW_TAG"
+          echo "new_tag=$NEW_TAG" >> $FORGEJO_OUTPUT
+      - name: Push new tag
+        run: |
+          git config user.name "Curiosity Bot"
+          git config user.email "curiosity@letf.local"
+          git tag ${{ steps.create_tag.outputs.new_tag }}
+          git push origin ${{ steps.create_tag.outputs.new_tag }}
