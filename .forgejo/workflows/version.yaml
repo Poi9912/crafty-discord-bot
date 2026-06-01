@@ -29,5 +29,5 @@ jobs:
           echo "Will tag the latest commit with: $NEW_TAG"
           git tag $NEW_TAG
           git push origin $NEW_TAG
-          echo "CLEAN_TAG=$NEW_TAG" >> $FORGEJO_OUTPUT
+          echo "NEW_TAG=$NEW_TAG" >> $FORGEJO_OUTPUT
           echo "New tag $NEW_TAG created and pushed to origin."
