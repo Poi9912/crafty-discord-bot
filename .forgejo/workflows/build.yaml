@@ -39,6 +39,8 @@ jobs:
           echo "Using tag: $CLEAN_TAG"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
+          echo "Clearing conflicting container storage driver metadata cache..."
+          rm -rf /var/lib/containers/storage/*
           podman --storage-driver vfs build --isolation chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Docker image built with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
           podman push $IMAGE_PATH:$CLEAN_TAG
