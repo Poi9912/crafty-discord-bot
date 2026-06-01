@@ -38,12 +38,7 @@ jobs:
           location = "$REGISTRY"
           insecure = true
           EOF
-          echo "Logging into Registry $REGISTRY..."
-          echo "${{ secrets.BOT_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY \
-            -u "${{ secrets.BOT_USERNAME }}" \
-            --password-stdin \
-            --tls-verify=false \
-            --authfile=/tmp/podman-auth.json
+          rm -rf /var/lib/containers/storage/*
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
@@ -54,6 +49,12 @@ jobs:
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Docker image built successfully with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
           echo "Streaming layers securely to local container registry..."
-          podman --storage-driver=vfs push $IMAGE_PATH:$CLEAN_TAG
-          podman --storage-driver=vfs push $IMAGE_PATH:latest
+          podman --storage-driver=vfs push \
+            --creds="${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            --tls-verify=false \
+            $IMAGE_PATH:$CLEAN_TAG
+          podman --storage-driver=vfs push \
+            --creds="${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            --tls-verify=false \
+            $IMAGE_PATH:latest
           echo "Images pushed successfully to ${{ env.REGISTRY_HOST }}"
