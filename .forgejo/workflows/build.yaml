@@ -8,6 +8,9 @@ jobs:
       image: quay.io/podman/stable
       options: --privileged
     steps:
+      - run: |
+          echo "prepare build environment"
+          dnf install -y node git
       - uses: https://data.forgejo.org/actions/checkout@v4
       - name: Log in to Forgejo Container Registry
         run: |
