@@ -41,7 +41,7 @@ jobs:
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
           echo "Clearing conflicting container storage driver metadata cache..."
           rm -rf /var/lib/containers/storage/*
-          podman --storage-driver vfs build --isolation chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          podman build --isolation chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Docker image built with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
           podman push $IMAGE_PATH:$CLEAN_TAG
           podman push $IMAGE_PATH:latest
