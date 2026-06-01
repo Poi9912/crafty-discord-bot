@@ -1,6 +1,9 @@
 name: version
 on:
   workflow_call:
+    outputs:
+      new_tag:
+        value: ${{ steps.create_tag.outputs.NEW_TAG }}
 jobs:
   bump-version:
     runs-on: docker
