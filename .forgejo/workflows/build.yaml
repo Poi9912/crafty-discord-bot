@@ -46,6 +46,6 @@ jobs:
           echo "Using tag: $CLEAN_TAG"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
-          docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
-          docker push $IMAGE_PATH:$CLEAN_TAG
-          docker push $IMAGE_PATH:latest
+          docker --config ~/.docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          docker --config ~/.docker push $IMAGE_PATH:$CLEAN_TAG
+          docker --config ~/.docker push $IMAGE_PATH:latest
