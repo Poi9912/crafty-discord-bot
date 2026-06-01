@@ -23,7 +23,7 @@ jobs:
             REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
-          echo "REGISTRY_HOST=$REGISTRY" >> $GITHUB_ENV
+          echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
           echo "Clearing out conflicting storage caches..."
           rm -rf /var/lib/containers/storage/*
           mkdir -p /etc/containers
@@ -39,7 +39,11 @@ jobs:
           insecure = true
           EOF
           echo "Logging into Registry $REGISTRY..."
-          echo "${{ env.FORGEJO_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
+          echo "Logging into Registry $REGISTRY..."
+          echo "${{ env.FORGEJO_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY \
+            -u "${{ env.FORGEJO_ACTOR }}" \
+            --password-stdin \
+            --authfile=/tmp/podman-auth.json
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
