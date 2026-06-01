@@ -47,14 +47,13 @@ jobs:
           IMAGE_PATH="${{ env.REGISTRY_HOST }}/$REPO_LOWER"
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
-          echo "Docker image built successfully with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
-          echo "Streaming layers securely to local container registry..."
-          podman --storage-driver=vfs push \
-            --creds="${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
-            --tls-verify=false \
-            $IMAGE_PATH:$CLEAN_TAG
-          podman --storage-driver=vfs push \
-            --creds="${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
-            --tls-verify=false \
-            $IMAGE_PATH:latest
-          echo "Images pushed successfully to ${{ env.REGISTRY_HOST }}"
+          echo "Syncing layers to registry via skopeo..."
+          skopeo copy --dest-tls-verify=false \
+            --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            containers-storage:localhost/$IMAGE_PATH:$CLEAN_TAG \
+            docker://$IMAGE_PATH:$CLEAN_TAG
+          skopeo copy --dest-tls-verify=false \
+            --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            containers-storage:localhost/$IMAGE_PATH:latest \
+            docker://$IMAGE_PATH:latest
+          echo "Images successfully pushed using skopeo."
