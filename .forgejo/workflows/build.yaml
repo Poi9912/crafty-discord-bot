@@ -17,7 +17,7 @@ jobs:
           sudo systemctl restart docker
       - name: Log in to Forgejo Container Registry
         run: |
-          echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ FORGEJO_ACTOR }} --password-stdin
+          echo "${{ forgejo.token }}" | docker login $REGISTRY_HOST -u ${{ forgejo.actor }} --password-stdin
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG=${{ inputs.tag_name }}
