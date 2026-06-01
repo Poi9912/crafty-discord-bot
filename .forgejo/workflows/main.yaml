@@ -11,7 +11,7 @@ jobs:
     secrets: inherit
   version-bump:
     needs: test
-    if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_REF == 'refs/heads/main'
+    if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_HEAD_REF == 'refs/heads/main'
     uses: ./.forgejo/workflows/version.yaml
     secrets: inherit
   build:
