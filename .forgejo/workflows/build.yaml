@@ -3,11 +3,18 @@ on:
   workflow_call:
 jobs:
   build-push:
-    runs-on: lxc-host
+    runs-on: linux-amd64
+    container:
+      image: node:lts-alpine
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Setup docker cli in the builder container
+        run: |
+          apk update && apk add --no-cache docker-cli
       - name: Log in to Forgejo Container Registry
         run: |
           echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
