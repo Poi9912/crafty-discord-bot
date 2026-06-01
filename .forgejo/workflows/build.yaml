@@ -33,18 +33,20 @@ jobs:
           runroot = "/run/containers/storage"
           graphroot = "/var/lib/containers/storage"
           EOF
+          rm -rf /var/lib/containers/storage/*
+      - name: Build and Push Docker Image
+        run: |
+          CLEAN_TAG="${{ inputs.tag }}"
+          REGISTRY="${{ env.FORGEJO_REGISTRY }}"
+          [ -z "$REGISTRY" ] && REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
+          REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_PATH="$REGISTRY/$REPO_LOWER"
+          mkdir -p /etc/containers
           cat <<EOF > /etc/containers/registries.conf
           [[registry]]
           location = "$REGISTRY"
           insecure = true
           EOF
-          rm -rf /var/lib/containers/storage/*
-      - name: Build and Push Docker Image
-        run: |
-          CLEAN_TAG="${{ inputs.tag }}"
-          echo "Using tag: $CLEAN_TAG"
-          REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE_PATH="${{ env.REGISTRY_HOST }}/$REPO_LOWER"
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           podman --storage-driver=vfs images
