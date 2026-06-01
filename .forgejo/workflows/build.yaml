@@ -24,9 +24,6 @@ jobs:
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
           echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
-          echo "Configuring container client for insecure registry..."
-          mkdir -p /etc/docker
-          echo "{\"insecure-registries\": [\"$REGISTRY\"]}" > /etc/docker/daemon.json
           echo "${{ env.FORGEJO_TOKEN }}" | docker login "$REGISTRY" -u ${{ env.FORGEJO_ACTOR }} --password-stdin
       - name: Build and Push Docker Image
         run: |

@@ -1,14 +1,15 @@
+name: main-workflow
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 jobs:
-  test:
-    uses: ./.forgejo/workflows/test.yaml
+  tests:
+    uses: ./.forgejo/workflows/tests.yaml
     secrets: inherit
   version-bump:
-    needs: test
+    needs: tests
     if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_HEAD_REF == 'refs/heads/main'
     uses: ./.forgejo/workflows/version.yaml
     secrets: inherit
