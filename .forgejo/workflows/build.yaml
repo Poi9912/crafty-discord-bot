@@ -49,12 +49,17 @@ jobs:
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           podman --storage-driver=vfs images
           echo "Syncing layers to registry via skopeo..."
+          mkdir -p /tmp/auth
+          echo "${{ secrets.BOT_TOKEN }}" | podman login "$REGISTRY" \
+            -u "${{ secrets.BOT_USERNAME }}" \
+            --password-stdin \
+            --authfile=/tmp/auth/config.json
           skopeo copy --dest-tls-verify=false \
-            --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            --authfile=/tmp/auth/config.json \
             containers-storage:$IMAGE_PATH:$CLEAN_TAG \
             docker://$IMAGE_PATH:$CLEAN_TAG
           skopeo copy --dest-tls-verify=false \
-            --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
+            --authfile=/tmp/auth/config.json \
             containers-storage:$IMAGE_PATH:latest \
             docker://$IMAGE_PATH:latest
           echo "Images successfully pushed using skopeo."
