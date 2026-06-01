@@ -12,13 +12,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Log in to Forgejo Container Registry
         run: |
-          echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
+          echo "${{ env.FORGEJO_TOKEN }}" | podman login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
-          docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          podman build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           # Standard image push steps over insecure connection channel
-          docker push $IMAGE_PATH:$CLEAN_TAG
-          docker push $IMAGE_PATH:latest
+          podman push $IMAGE_PATH:$CLEAN_TAG
+          podman push $IMAGE_PATH:latest
