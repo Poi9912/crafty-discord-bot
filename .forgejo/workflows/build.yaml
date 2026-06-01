@@ -10,7 +10,7 @@ jobs:
     runs-on: linux-amd64
     container:
       image: quay.io/podman/stable
-      options: --privileged
+      options: --privileged --device /dev/fuse
     steps:
       - run: |
           echo "prepare build environment"
