@@ -1,15 +1,6 @@
 name: version
-
 on:
-  workflow_run:
-    workflows: ["tests"]
-    types:
-      - completed
-    events:
-      - push
-    branches:
-      - main
-
+  workflow_call:
 jobs:
   bump-version:
     runs-on: docker
@@ -29,8 +20,6 @@ jobs:
           PATCH=$(echo $VERSION | cut -d. -f3)
           NEW_PATCH=$((PATCH + 1))
           NEW_TAG="v$MAJOR.$MINOR.$NEW_PATCH"
-          echo "Next tag: $NEW_TAG"
-          echo "new_tag=$NEW_TAG" >> $FORGEJO_OUTPUT
       - name: Push new tag
         run: |
           git config user.name "Curiosity Bot"

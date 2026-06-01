@@ -1,14 +1,6 @@
 name: deploy to dokploy
 on:
-  workflow_run:
-    workflows: ["build docker image"]
-    types:
-      - completed
-    events:
-      - push
-    branches:
-      - main
-
+  workflow_call:
 jobs:
   deploy:
     runs-on: docker

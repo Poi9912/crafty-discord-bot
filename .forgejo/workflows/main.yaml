@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    uses: ./.forgejo/workflows/test.yaml
+    secrets: inherit
+  version-bump:
+    needs: test
+    if: forgejo.event_name == 'push' && forgejo.ref == 'refs/heads/main'
+    uses: ./.forgejo/workflows/version.yaml
+    secrets: inherit
+  build:
+    needs: version-bump
+    uses: ./.forgejo/workflows/build.yaml
+    secrets: inherit
+  deploy:
+    needs: build
+    uses: ./.forgejo/workflows/deploy.yaml
+    secrets: inherit
