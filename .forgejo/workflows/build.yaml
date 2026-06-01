@@ -34,5 +34,5 @@ jobs:
           docker push $IMAGE_PATH:latest
   trigger-deploy:
     needs: build-push
-    uses: ./deploy.yaml
+    uses: ./forgejo/workflows/deploy.yaml
     secrets: inherit
