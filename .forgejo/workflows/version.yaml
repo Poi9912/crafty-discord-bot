@@ -12,7 +12,7 @@ jobs:
         id: create_tag
         run: |
           git fetch --tags
-          LATEST_TAG=$(git describe --tags --abbrev=0 --tags "v*.*.*" 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
           echo "Current latest tag: $LATEST_TAG"
           VERSION=${LATEST_TAG#v}
           MAJOR=$(echo $VERSION | cut -d. -f1)
