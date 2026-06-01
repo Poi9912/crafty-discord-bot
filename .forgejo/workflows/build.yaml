@@ -32,7 +32,7 @@ jobs:
           # Standard image push steps over insecure connection channel
           docker push $IMAGE_PATH:$CLEAN_TAG
           docker push $IMAGE_PATH:latest
-  trigger-deploy:
+  deploy:
     needs: build-push
     uses: ./.forgejo/workflows/deploy.yaml
     secrets: inherit

@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
       - name: Install dependencies
-        run: npm ci
+        run: npm i --include=dev
       - name: Run tests
         run: npm test
-  trigger-version-bump:
+  version-bump:
     needs: test
     if: forgejo.event_name == 'push' && forgejo.ref == 'refs/heads/main'
     uses: ./.forgejo/workflows/version.yaml
