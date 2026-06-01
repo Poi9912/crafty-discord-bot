@@ -1,0 +1,19 @@
+name: tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: docker
+    container:
+      image: node:lts-alpine
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+      - name: Install dependencies
+        run: npm i --include=dev
+      - name: Run tests
+        run: npm test
