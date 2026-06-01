@@ -22,7 +22,7 @@ jobs:
           echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
       - name: Build and Push Docker Image
         run: |
-          CLEAN_TAG=${{ git describe --tags --abbrev=0 || echo "v0.0.0" }}
+          CLEAN_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
           docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
