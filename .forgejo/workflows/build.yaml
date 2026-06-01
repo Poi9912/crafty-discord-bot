@@ -17,7 +17,14 @@ jobs:
           apk update && apk add --no-cache docker-cli
       - name: Log in to Forgejo Container Registry
         run: |
-          echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
+          REGISTRY="${{ env.FORGEJO_REGISTRY }}"
+          if [ -z "$REGISTRY" ]; then
+            # Extract domain/host safely from server URL context as a definitive backup
+            REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
+          fi
+          echo "Target Registry Host Determined As: $REGISTRY"
+          echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
+          echo "${{ env.FORGEJO_TOKEN }}" | docker login "$REGISTRY" -u ${{ env.FORGEJO_ACTOR }} --password-stdin
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
