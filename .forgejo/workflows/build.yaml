@@ -20,35 +20,36 @@ jobs:
         run: |
           REGISTRY="${{ env.FORGEJO_REGISTRY }}"
           if [ -z "$REGISTRY" ]; then
-            # Extract domain/host safely from server URL context as a definitive backup
             REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
-          echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
-      - name: Build and Push Docker Image
-        run: |
-          CLEAN_TAG="${{ inputs.tag }}"
-          echo "Using tag: $CLEAN_TAG"
-          REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
-          echo "Clearing conflicting container storage driver metadata cache..."
+          echo "REGISTRY_HOST=$REGISTRY" >> $GITHUB_ENV
+          echo "Clearing out conflicting storage caches..."
           rm -rf /var/lib/containers/storage/*
+          mkdir -p /etc/containers
           cat <<EOF > /etc/containers/storage.conf
           [storage]
           driver = "vfs"
           runroot = "/run/containers/storage"
           graphroot = "/var/lib/containers/storage"
           EOF
-          mkdir -p /etc/containers
           cat <<EOF > /etc/containers/registries.conf
           [[registry]]
           location = "$REGISTRY"
           insecure = true
           EOF
-          echo "${{ env.FORGEJO_TOKEN }}" | podman login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
-          echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
+          echo "Logging into Registry $REGISTRY..."
+          echo "${{ env.FORGEJO_TOKEN }}" | podman --storage-driver=vfs login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
+      - name: Build and Push Docker Image
+        run: |
+          CLEAN_TAG="${{ inputs.tag }}"
+          echo "Using tag: $CLEAN_TAG"
+          REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_PATH="${{ env.REGISTRY_HOST }}/$REPO_LOWER"
+          echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
-          echo "Docker image built with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
+          echo "Docker image built successfully with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
+          echo "Streaming layers securely to local container registry..."
           podman --storage-driver=vfs push $IMAGE_PATH:$CLEAN_TAG
           podman --storage-driver=vfs push $IMAGE_PATH:latest
-          echo "Docker images pushed successfully to $REGISTRY_HOST"
+          echo "Images pushed successfully to ${{ env.REGISTRY_HOST }}"
