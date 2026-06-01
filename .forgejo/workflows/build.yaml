@@ -47,13 +47,14 @@ jobs:
           IMAGE_PATH="${{ env.REGISTRY_HOST }}/$REPO_LOWER"
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          podman --storage-driver=vfs images
           echo "Syncing layers to registry via skopeo..."
           skopeo copy --dest-tls-verify=false \
             --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
-            containers-storage:localhost/$IMAGE_PATH:$CLEAN_TAG \
+            containers-storage:$IMAGE_PATH:$CLEAN_TAG \
             docker://$IMAGE_PATH:$CLEAN_TAG
           skopeo copy --dest-tls-verify=false \
             --dest-creds "${{ secrets.BOT_USERNAME }}:${{ secrets.BOT_TOKEN }}" \
-            containers-storage:localhost/$IMAGE_PATH:latest \
+            containers-storage:$IMAGE_PATH:latest \
             docker://$IMAGE_PATH:latest
           echo "Images successfully pushed using skopeo."
