@@ -16,7 +16,7 @@ jobs:
           echo "prepare build environment"
           dnf install -y node git
       - uses: https://data.forgejo.org/actions/checkout@v4
-      - name: Log in to Forgejo Container Registry
+      - name: Obtain Forgejo Container Registry
         run: |
           REGISTRY="${{ env.FORGEJO_REGISTRY }}"
           if [ -z "$REGISTRY" ]; then
@@ -25,14 +25,6 @@ jobs:
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
           echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
-          mkdir -p /etc/containers
-          cat <<EOF > /etc/containers/registries.conf
-          [[registry]]
-          location = "$REGISTRY"
-          insecure = true
-          EOF
-          echo "${{ env.FORGEJO_TOKEN }}" | podman login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
-          echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
       - name: Build and Push Docker Image
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
@@ -47,6 +39,14 @@ jobs:
           runroot = "/run/containers/storage"
           graphroot = "/var/lib/containers/storage"
           EOF
+          mkdir -p /etc/containers
+          cat <<EOF > /etc/containers/registries.conf
+          [[registry]]
+          location = "$REGISTRY"
+          insecure = true
+          EOF
+          echo "${{ env.FORGEJO_TOKEN }}" | podman login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
+          echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Docker image built with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
           podman --storage-driver=vfs push $IMAGE_PATH:$CLEAN_TAG
