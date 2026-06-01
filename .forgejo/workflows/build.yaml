@@ -14,9 +14,9 @@ jobs:
         run: |
           REGISTRY_HOST=$(echo "${{ env.FORGEJO_REGISTRY_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
           echo "REGISTRY_HOST=$REGISTRY_HOST" >> $FORGEJO_ENV
-          sudo mkdir -p /etc/docker
-          echo "{\"insecure-registries\": [\"$REGISTRY_HOST\"]}" | sudo tee /etc/docker/daemon.json
-          sudo systemctl restart docker
+          mkdir -p /etc/docker
+          echo "{\"insecure-registries\": [\"$REGISTRY_HOST\"]}" | tee /etc/docker/daemon.json
+          systemctl restart docker
       - name: Log in to Forgejo Container Registry
         run: |
           echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ env.FORGEJO_ACTOR }} --password-stdin
