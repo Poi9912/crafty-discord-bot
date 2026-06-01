@@ -1,11 +1,9 @@
 name: tests
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  workflow_call:
 jobs:
   test:
     runs-on: docker
@@ -14,6 +12,6 @@ jobs:
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
       - name: Install dependencies
-        run: npm i --include=dev
+        run: npm i --include=dev --no-audit --no-fund
       - name: Run tests
         run: npm test
