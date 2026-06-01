@@ -20,5 +20,5 @@ jobs:
   trigger-version-bump:
     needs: test
     if: forgejo.event_name == 'push' && forgejo.ref == 'refs/heads/main'
-    uses: ./forgejo/workflows/version.yaml
+    uses: ./.forgejo/workflows/version.yaml
     secrets: inherit

@@ -34,7 +34,7 @@ jobs:
           git push origin ${{ steps.bump-version.outputs.new_tag }}
   trigger-build:
     needs: bump-version
-    uses: ./forgejo/workflows/build.yaml
+    uses: ./.forgejo/workflows/build.yaml
     with:
       tag_name: ${{ needs.bump-version.outputs.new_tag }}
     secrets: inherit
