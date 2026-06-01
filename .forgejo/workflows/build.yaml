@@ -5,18 +5,10 @@ jobs:
   build-push:
     runs-on: linux-amd64
     container:
-      image: node:lts-alpine
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - /root/.containermanagers:/root/.containermanagers
-        - /etc/containers/registries.conf:/etc/containers/registries.conf:ro
+      image: quay.io/podman/stable
+      options: --privileged
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup docker cli in the builder container
-        run: |
-          apk update && apk add --no-cache docker-cli
       - name: Log in to Forgejo Container Registry
         run: |
           REGISTRY="${{ env.FORGEJO_REGISTRY }}"
@@ -26,6 +18,12 @@ jobs:
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
           echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
+          mkdir -p /etc/containers
+          cat <<EOF > /etc/containers/registries.conf
+          [[registry]]
+          location = "$REGISTRY"
+          insecure = true
+          EOF
           echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
           echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
       - name: Build and Push Docker Image
