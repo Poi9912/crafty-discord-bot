@@ -2,7 +2,7 @@ name: deploy to dokploy
 on:
   workflow_call:
 jobs:
-  deploy:
+  deploy-dokploy:
     runs-on: docker
     steps:
       - name: Trigger webhook

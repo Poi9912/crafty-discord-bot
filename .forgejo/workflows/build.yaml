@@ -1,6 +1,10 @@
 name: build docker image
 on:
   workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 jobs:
   build-push:
     runs-on: linux-amd64
@@ -31,6 +35,7 @@ jobs:
           echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
       - name: Build and Push Docker Image
         run: |
+          CLEAN_TAG="${{ inputs.tag }}"
           echo "Using tag: $CLEAN_TAG"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"

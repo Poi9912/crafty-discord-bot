@@ -16,6 +16,8 @@ jobs:
   build:
     needs: version-bump
     uses: ./.forgejo/workflows/build.yaml
+    with:
+      tag: ${{ needs.version-bump.outputs.CLEAN_TAG }}
     secrets: inherit
   deploy:
     needs: build
