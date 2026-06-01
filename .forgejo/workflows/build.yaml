@@ -14,7 +14,7 @@ jobs:
     steps:
       - run: |
           echo "prepare build environment"
-          dnf install -y node git
+          dnf install -y node git skopeo
       - uses: https://data.forgejo.org/actions/checkout@v4
       - name: Obtain Forgejo Container Registry
         run: |
