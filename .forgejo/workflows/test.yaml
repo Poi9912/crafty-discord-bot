@@ -17,3 +17,8 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
+  trigger-version-bump:
+    needs: test
+    if: forgejo.event_name == 'push' && forgejo.ref == 'refs/heads/main'
+    uses: ./version.yaml
+    secrets: inherit

@@ -1,11 +1,13 @@
 name: build docker image
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
 jobs:
-  build:
+  build-push:
     runs-on: docker
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
@@ -23,10 +25,14 @@ jobs:
           echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY_HOST -u ${{ FORGEJO_ACTOR }} --password-stdin
       - name: Build and Push Docker Image
         run: |
-          CLEAN_TAG=${{ env.FORGEJO_REF_NAME }}
+          CLEAN_TAG=${{ inputs.tag_name }}
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
           docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           # Standard image push steps over insecure connection channel
           docker push $IMAGE_PATH:$CLEAN_TAG
           docker push $IMAGE_PATH:latest
+  trigger-deploy:
+    needs: build-push
+    uses: ./deploy.yaml
+    secrets: inherit
