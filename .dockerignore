@@ -6,4 +6,3 @@ logs
 data
 */*.test.*
 */*.spec.*
-.docker/*

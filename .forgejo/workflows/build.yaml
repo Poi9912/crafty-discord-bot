@@ -9,13 +9,14 @@ jobs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
         - /root/.containermanagers:/root/.containermanagers
+        - /etc/containers/registries.conf:/etc/containers/registries.conf:ro
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup docker cli in the builder container
         run: |
-          apk update && apk add --no-cache docker-cli git
+          apk update && apk add --no-cache docker-cli
       - name: Log in to Forgejo Container Registry
         run: |
           REGISTRY="${{ env.FORGEJO_REGISTRY }}"
@@ -25,29 +26,15 @@ jobs:
           fi
           echo "Target Registry Host Determined As: $REGISTRY"
           echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
-          AUTH_TOKEN=$(echo -n "${{ env.FORGEJO_ACTOR }}:${{ env.FORGEJO_TOKEN }}" | base64 | tr -d '\n')
-          mkdir -p ~/.docker
-          cat <<EOF > ~/.docker/config.json
-          {
-            "auths": {
-              "$REGISTRY": {
-                "auth": "$AUTH_TOKEN"
-              }
-            }
-          }
-          EOF
-          echo "Registry credentials populated via file injection layout."
+          echo "${{ env.FORGEJO_TOKEN }}" | docker login $REGISTRY -u "${{ env.FORGEJO_ACTOR }}" --password-stdin
+          echo "Login Registry $REGISTRY with actor ${{ env.FORGEJO_ACTOR }}"
       - name: Build and Push Docker Image
         run: |
-          CLEAN_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
-          if [ -z "$CLEAN_TAG" ]; then
-            CLEAN_TAG="v0.0.0"
-          fi
           echo "Using tag: $CLEAN_TAG"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY_HOST/$REPO_LOWER"
-          docker --config ~/.docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          docker build -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Docker image built with tags: $IMAGE_PATH:$CLEAN_TAG and $IMAGE_PATH:latest"
-          docker --config ~/.docker push $IMAGE_PATH:$CLEAN_TAG
-          docker --config ~/.docker push $IMAGE_PATH:latest
+          docker push $IMAGE_PATH:$CLEAN_TAG
+          docker push $IMAGE_PATH:latest
           echo "Docker images pushed successfully to $REGISTRY_HOST"
