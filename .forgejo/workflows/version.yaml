@@ -30,13 +30,13 @@ jobs:
           NEW_PATCH=$((PATCH + 1))
           NEW_TAG="v$MAJOR.$MINOR.$NEW_PATCH"
           echo "New tag: $NEW_TAG"
-          echo "Updating package.json to version $NEW_VERSION..."
-          sed -i -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "'$NEW_VERSION'"/' package.json
+          echo "Updating package.json to match ${NEW_TAG#v}..."
+          sed -i -E 's/"version": "[0-9]+\.[0-9]+\.[0-9]+"/"version": "'${NEW_TAG#v}'"/' package.json
           git config user.name "${{ secrets.BOT_USERNAME}}"
           git config user.email "${{ secrets.BOT_EMAIL}}"
           echo "Committing package.json update..."
           git add package.json
-          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+          git commit -m "chore: bump version to $NEW_TAG [skip ci]"
           echo "Will tag the latest commit with: $NEW_TAG"
           git tag $NEW_TAG
           echo "Pushing commit and tag to origin..."
