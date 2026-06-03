@@ -12,7 +12,7 @@ jobs:
     outputs:
       computed_tag: ${{ steps.create_tag.outputs.NEW_TAG }}
     steps:
-      - run: apk add --no-cache git jq node npm
+      - run: apk add --no-cache git jq nodejs npm
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
           fetch-depth: 0
