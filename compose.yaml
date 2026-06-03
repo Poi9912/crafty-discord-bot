@@ -1,6 +1,6 @@
 services:
   discord-bot:
-    image: letf.local:3000/poi/minecraft-discord-bot:latest
+    image: ${DOCKER_REPOSITORY}/${IMAGE_NAME}:latest
     container_name: minecraft-discord-bot
     pull_policy: always
     restart: unless-stopped
