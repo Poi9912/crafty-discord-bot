@@ -30,8 +30,9 @@ jest.mock('discord.js', () => {
 process.env.CRAFTY_URL = 'https://crafty-controller-host';
 process.env.CRAFTY_TOKEN = 'test-token';
 process.env.CRAFTY_MC_INSTANCE = 'test-server-id';
+process.env.DISCORD_MINECRAFT_ADMIN_ROLE = 'admin-role-id';
 
-const { getServerStatus } = require('../controllers/crafty');
+const { sendConsoleCommand } = require('../controllers/crafty');
 const { standardEmbed } = require('../utils/embeds');
 
 const announceCommand = require('./announce');
@@ -41,7 +42,6 @@ jest.mock('../utils/embeds', () => ({
 }));
 
 jest.mock('../controllers/crafty', () => ({
-  getServerStatus: jest.fn(),
   sendConsoleCommand: jest.fn(),
 }));
 
@@ -53,7 +53,7 @@ describe('announce command', () => {
       deferReply: jest.fn().mockResolvedValue({}),
       editReply: jest.fn().mockResolvedValue({}),
       options: {
-        getString: jest.fn(),
+        getString: jest.fn().mockReturnValue('Test announcement message'),
       },
       user: {
         username: 'TestUser',
@@ -65,24 +65,21 @@ describe('announce command', () => {
           }
         },
       },
-      options: {
-        getString: jest.fn(),
-      },
     };
   });
 
   it('should send the correct console command to Crafty', async () => {
     interaction.member.roles.cache.has.mockReturnValue(true);
-    interaction.options.getString.mockImplementation(name => (name === 'message' ? 'Test announcement message' : null));
+    sendConsoleCommand.mockResolvedValue(undefined);
     await announceCommand.execute(interaction);
-    // expect(interaction.options.getString).toHaveBeenCalledWith('message');
     expect(interaction.deferReply).toHaveBeenCalledWith({ flags: [64] });
-    expect(getServerStatus.sendConsoleCommand).toHaveBeenCalledWith('say From TestUser: Test announcement message');
+    expect(sendConsoleCommand).toHaveBeenCalledWith('say From TestUser: Test announcement message');
     expect(interaction.editReply).toHaveBeenCalledWith({ content: 'Successfully executed: `say From TestUser: Test announcement message`' });
   });
 
   it('should return an error message if the user is not authorized', async () => {
     interaction.member.roles.cache.has.mockReturnValue(false);
+    sendConsoleCommand.mockResolvedValue(undefined);
     await announceCommand.execute(interaction);
     expect(interaction.editReply).toHaveBeenCalledWith({
       content: 'You do not have the required permissions to send announcements.'
@@ -90,7 +87,8 @@ describe('announce command', () => {
   });
 
   it('should return an error message if sending the command fails', async () => {
-    getServerStatus.sendConsoleCommand.mockRejectedValue(new Error('Crafty error'));
+    interaction.member.roles.cache.has.mockReturnValue(true);
+    sendConsoleCommand.mockRejectedValue(new Error('Crafty error'));
     await announceCommand.execute(interaction);
     expect(interaction.editReply).toHaveBeenCalledWith({ content: 'Failed to send command to Crafty.' });
   });
