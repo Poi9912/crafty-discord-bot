@@ -27,11 +27,6 @@ jest.mock('discord.js', () => {
   };
 });
 
-jest.mock('../controllers/crafty', () => ({
-  sendConsoleCommand: jest.fn(),
-  sendConsoleCommandWithResponse: jest.fn(),
-}));
-
 // Mock environment variables
 process.env.CRAFTY_URL = 'https://crafty-controller-host';
 process.env.CRAFTY_TOKEN = 'test-token';
@@ -40,6 +35,11 @@ process.env.DISCORD_MINECRAFT_ADMIN_ROLE = 'admin-role-id';
 
 const { sendConsoleCommand, sendConsoleCommandWithResponse } = require('../controllers/crafty');
 const whitelistCommand = require('./whitelist');
+
+jest.mock('../controllers/crafty', () => ({
+  sendConsoleCommand: jest.fn(),
+  sendConsoleCommandWithResponse: jest.fn(),
+}));
 
 describe('whitelist command', () => {
   let interaction;
@@ -59,8 +59,6 @@ describe('whitelist command', () => {
         getString: jest.fn(),
       },
     };
-
-    jest.clearAllMocks();
   });
 
   test('should deny access when user is not admin', async () => {
