@@ -25,10 +25,10 @@ function whitelistEnableDisable(log) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('whitelist')
-    .setDescription('Add/Remove players from the whitelist')
+    .setDescription('Add/Remove/List players from the whitelist or enable/disable the whitelist')
     .addStringOption(opt =>
       opt.setName('action')
-        .setDescription('add, remove or list')
+        .setDescription('add, remove, list, enable or disable')
         .setRequired(true)
         .addChoices(
           { name: 'add', value: 'add' },

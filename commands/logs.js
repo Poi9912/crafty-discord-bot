@@ -4,7 +4,7 @@ const { getRecentLogs } = require('../controllers/crafty');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('logs')
-    .setDescription('View the last 15 lines of the server console'),
+    .setDescription('View the last 15 lines of the server logs'),
 
   async execute(interaction) {
     await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
