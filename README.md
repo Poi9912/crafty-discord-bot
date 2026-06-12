@@ -98,3 +98,9 @@ Every 60 seconds the bot will update the current player count in the minecraft s
 Options with (*) are required.
 
 Commands with `Minecraft Admin Only: true` can be used only by users with the role specified in the `DISCORD_MINECRAFT_ADMIN_ROLE` environment variable.
+
+## Built with
+- [Node.js](https://nodejs.org/)
+- [Discord.js](https://discord.js.org/)
+- [Axios](https://axios.rest/)
+- [Docker](https://docs.docker.com/)
