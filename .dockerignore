@@ -1,8 +1,11 @@
 .git
 .gitignore
+.forgejo
 node_modules
 .env
 logs
 data
 */*.test.*
 */*.spec.*
+README.md
+LICENSE
