@@ -6,3 +6,5 @@ logs
 data
 */*.test.*
 */*.spec.*
+README.md
+LICENSE
