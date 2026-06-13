@@ -54,16 +54,20 @@ describe('Ready event', () => {
     consoleLogSpy.mockRestore();
   });
 
-  test('should log error when presence update fails', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+  test('should update presence to unavailable when status fetch fails', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     getServerStatus.mockRejectedValue(new Error('Crafty API error'));
 
     await readyEvent.execute(mockClient);
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Error updating bot presence',
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to fetch server status for presence update:',
       expect.any(Error)
     );
-    consoleLogSpy.mockRestore();
+    expect(mockClient.user.setPresence).toHaveBeenCalledWith({
+      activities: [{ name: 'Status unavailable', type: ActivityType.Watching }],
+      status: 'idle',
+    });
+    consoleErrorSpy.mockRestore();
   });
 });
