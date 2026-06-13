@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, Events } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -79,8 +79,41 @@ for (const file of handlerFiles) {
   }
 }
 
-client.on('clientReady', (c) => {
+client.on(Events.ClientReady, () => {
   registerCommands();
+});
+
+client.on(Events.Error, (error) => {
+  console.error('Discord client error:', error);
+});
+
+client.on(Events.ShardError, (error) => {
+  console.error('Discord shard error:', error);
+});
+
+client.on(Events.Warn, (info) => {
+  console.warn('Discord warning:', info);
+});
+
+client.on(Events.ShardDisconnect, (closeEvent, shardId) => {
+  console.warn(`Shard ${shardId} disconnected: code=${closeEvent?.code} reason=${closeEvent?.reason}`);
+});
+
+client.on(Events.Invalidated, async () => {
+  console.warn('Discord session invalidated, attempting reconnect...');
+  try {
+    await client.login(process.env.DISCORD_TOKEN);
+  } catch (error) {
+    console.error('Failed to reconnect after invalidation:', error);
+  }
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled promise rejection:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught exception:', error);
 });
 
 function handleExit() {
