@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Disable dotenv debug output in production
-if (process.env.NODE_ENV === 'PROD') {
+if (process.env.ENV === 'PROD') {
   process.env.DOTENV_DEBUG = 'false';
 }
 
