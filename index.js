@@ -1,6 +1,12 @@
 const { Client, GatewayIntentBits, Collection, REST, Routes, Events } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+
+// Disable dotenv debug output in production
+if (process.env.NODE_ENV === 'PROD') {
+  process.env.DOTENV_DEBUG = 'false';
+}
+
 require('dotenv').config();
 
 const client = new Client({
