@@ -24,33 +24,33 @@ async function getServerStatus() {
   let response;
   try {
     response = await crafty.get(`/api/v2/servers/${SERVER_ID}/stats`);
+    const stats = response.data.data;
+    const cleanStringPlayers = stats.players.replace(/'/g, '"');
+    const playerListResponse = JSON.parse(cleanStringPlayers) || [];
+    const description = stats.desc.replace(/§./g, '');
+    const mtod = description.trim().replace(/\s+/g, ' ');
+    const memoryUsageGB = (stats.mem / 1024 / 1024 / 1024 ).toFixed(2)+" GB";
+    const utcDateStarted = new Date(stats.started.replace(' ', 'T') + 'Z');
+    const msSinceLastBoot = new Date(Date.now() - utcDateStarted.getTime());
+    const timeSinceLastBoot = msSinceLastBoot.toISOString().substr(11, 8);
+    return {
+      online: stats.running,
+      players: `${stats.online}/${stats.max}`,
+      version: stats.version,
+      empty: stats.online!=0? false : true,
+      cpu: stats.cpu,
+      ram: memoryUsageGB,
+      player_list: playerListResponse,
+      MOTD: mtod,
+      starting: stats.waiting_start,
+      crashed: stats.crashed,
+      last_boot: stats.started,
+      uptime: timeSinceLastBoot,
+    };
   } catch (error) {
     console.log('Error fetching server stats:', error.message);
     return { online: false, error: 'Unable to fetch server stats' };
   }
-  const stats = response.data.data;
-  const cleanStringPlayers = stats.players.replace(/'/g, '"');
-  const playerListResponse = JSON.parse(cleanStringPlayers) || [];
-  const description = stats.desc.replace(/§./g, '');
-  const mtod = description.trim().replace(/\s+/g, ' ');
-  const memoryUsageGB = (stats.mem / 1024 / 1024 / 1024 ).toFixed(2)+" GB";
-  const utcDateStarted = new Date(stats.started.replace(' ', 'T') + 'Z');
-  const msSinceLastBoot = new Date(Date.now() - utcDateStarted.getTime());
-  const timeSinceLastBoot = msSinceLastBoot.toISOString().substr(11, 8);
-  return {
-    online: stats.running,
-    players: `${stats.online}/${stats.max}`,
-    version: stats.version,
-    empty: stats.online!=0? false : true,
-    cpu: stats.cpu,
-    ram: memoryUsageGB,
-    player_list: playerListResponse,
-    MOTD: mtod,
-    starting: stats.waiting_start,
-    crashed: stats.crashed,
-    last_boot: stats.started,
-    uptime: timeSinceLastBoot,
-  };
 }
 
 //direct command for autorized mc-admin role
