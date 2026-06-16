@@ -15,6 +15,14 @@ async function updateBotPresence(client) {
     return;
   }
 
+  if (stats.error) {
+    await client.user.setPresence({
+      activities: [{ name: 'Status unavailable', type: ActivityType.Watching }],
+      status: 'idle',
+    });
+    return;
+  }
+
   const isRunning = stats && (stats.online || stats.server_status?.running === true);
 
   if (!isRunning) {

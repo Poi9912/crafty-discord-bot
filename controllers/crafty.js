@@ -21,7 +21,13 @@ const crafty = axios.create({
 
 //get server status from crafty
 async function getServerStatus() {
-  const response = await crafty.get(`/api/v2/servers/${SERVER_ID}/stats`);
+  let response;
+  try {
+    response = await crafty.get(`/api/v2/servers/${SERVER_ID}/stats`);
+  } catch (error) {
+    console.log('Error fetching server stats:', error.message);
+    return { online: false, error: 'Unable to fetch server stats' };
+  }
   const stats = response.data.data;
   const cleanStringPlayers = stats.players.replace(/'/g, '"');
   const playerListResponse = JSON.parse(cleanStringPlayers) || [];
@@ -56,6 +62,7 @@ async function sendConsoleCommand(cmd) {
   });
 }
 
+//send command and wait for response in console logs, return last line of logs as response
 async function sendConsoleCommandWithResponse(cmd,waitMs=1000) {
   await crafty.post(`/api/v2/servers/${SERVER_ID}/stdin`, cmd, {
     headers: {
