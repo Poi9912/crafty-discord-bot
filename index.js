@@ -5,9 +5,10 @@ const path = require('path');
 // Disable dotenv debug output in production
 if (process.env.ENV === 'PROD') {
   process.env.DOTENV_DEBUG = 'false';
+} else {
+  require('dotenv').config();
+  process.env.DOTENV_DEBUG = 'true';
 }
-
-require('dotenv').config();
 
 const client = new Client({
   intents: [
