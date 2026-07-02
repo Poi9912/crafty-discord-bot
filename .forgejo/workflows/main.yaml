@@ -8,9 +8,9 @@ jobs:
   tests:
     uses: ./.forgejo/workflows/tests.yaml
     secrets: inherit
-  version-bump:
+  bump-version:
     needs: tests
-    if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_HEAD_REF == 'refs/heads/main'
+    if: env.FORGEJO_EVENT_NAME == 'push' && env.FORGEJO_REF_NAME == 'main'
     uses: ./.forgejo/workflows/version.yaml
     secrets: inherit
   build:
