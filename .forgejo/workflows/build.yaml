@@ -42,6 +42,7 @@ jobs:
           REGISTRY="${{ vars.ZOT_REGISTRY }}"
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY/$REPO_LOWER"
+          AUTHORS=$(git log --all --format=\"%ae\" | sort -u )
           
           mkdir -p /etc/containers
           cat <<EOF > /etc/containers/registries.conf
@@ -55,6 +56,7 @@ jobs:
             --label "org.opencontainers.image.revision"="$FORGEJO_SHA" \
             --label "org.opencontainers.image.version"="${CLEAN_TAG#v}" \
             --label "org.opencontainers.image.vendor"="${{ secrets.ZOT_USERNAME }}" \
+            --label "org.opencontainers.image.authors"="$AUTHORS" \
             -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Logging into Zot via skopeo..."
           echo "${{ secrets.ZOT_PASSWORD }}" | skopeo login --username "${{ secrets.ZOT_USERNAME }}" --password-stdin $REGISTRY
