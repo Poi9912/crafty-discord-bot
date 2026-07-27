@@ -35,11 +35,13 @@ jobs:
           echo "New tag: $NEW_TAG"
           echo "Updating package.json to match ${NEW_TAG#v}..."
           jq ".version = \"${NEW_TAG#v}\"" package.json > tmp.json && mv tmp.json package.json
+          jq ".version = \"${NEW_TAG#v}\"" package-lock.json > tmp.json && mv tmp.json package-lock.json
           git diff package.json
+          git diff package-lock.json
           git config user.name "${{ secrets.BOT_USERNAME}}"
           git config user.email "${{ secrets.BOT_EMAIL}}"
-          echo "Committing package.json update..."
-          git add package.json
+          echo "Committing package.json and package-lock.json updates..."
+          git add package.json package-lock.json
           git commit -m "chore: bump version to $NEW_TAG [skip ci]"
           echo "Will tag the latest commit with: $NEW_TAG"
           git tag $NEW_TAG
