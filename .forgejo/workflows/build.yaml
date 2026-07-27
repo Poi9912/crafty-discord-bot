@@ -50,7 +50,9 @@ jobs:
           EOF
           
           echo "Initiating user-space compilation via isolated Chroot..."
-          podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          podman --storage-driver=vfs build --isolation=chroot \
+            --label "org.opencontainers.image.source"="${{ env.FORGEJO_SERVER_URL }}/${{ env.FORGEJO_REPOSITORY }}" \
+            -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Logging into Zot via skopeo..."
           echo "${{ secrets.ZOT_PASSWORD }}" | skopeo login --username "${{ secrets.ZOT_USERNAME }}" --password-stdin $REGISTRY
           echo "Pushing images to Zot..."
