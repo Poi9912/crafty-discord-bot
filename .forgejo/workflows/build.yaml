@@ -5,6 +5,7 @@ on:
       tag:
         required: true
         type: string
+
 jobs:
   build-push:
     runs-on: linux-amd64
@@ -15,19 +16,15 @@ jobs:
       - run: |
           echo "prepare build environment"
           dnf install -y node git skopeo
+
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN }}
           ref: ${{ inputs.tag }}
-      - name: Obtain Forgejo Container Registry
+
+      - name: Setup Podman Storage
         run: |
-          REGISTRY="${{ env.FORGEJO_REGISTRY }}"
-          if [ -z "$REGISTRY" ]; then
-            REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
-          fi
-          echo "Target Registry Host Determined As: $REGISTRY"
-          echo "REGISTRY_HOST=$REGISTRY" >> $FORGEJO_ENV
           echo "Clearing out conflicting storage caches..."
           rm -rf /var/lib/containers/storage/*
           mkdir -p /etc/containers
@@ -38,29 +35,37 @@ jobs:
           graphroot = "/var/lib/containers/storage"
           EOF
           rm -rf /var/lib/containers/storage/*
-      - name: Build and Push Docker Image
+
+      - name: Build and Push Docker Image to Zot
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
-          REGISTRY="${{ env.FORGEJO_REGISTRY }}"
-          [ -z "$REGISTRY" ] && REGISTRY=$(echo "${{ env.FORGEJO_SERVER_URL }}" | sed -e 's|^http://||' -e 's|^https://||')
+          
+          # Replace with your Zot registry URL (e.g., zot.yourdomain.com)
+          REGISTRY="${{ secrets.ZOT_REGISTRY }}"
+          
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY/$REPO_LOWER"
+          
           mkdir -p /etc/containers
+          
           cat <<EOF > /etc/containers/registries.conf
           [[registry]]
           location = "$REGISTRY"
-          insecure = true
           EOF
+          
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           podman --storage-driver=vfs images
-          echo "Syncing layers to registry via skopeo..."
-          skopeo copy --dest-tls-verify=false \
-            --dest-creds "${{ secrets.OWNER_REGISTRY_USER }}:${{ secrets.OWNER_REGISTRY_TOKEN }}" \
+          
+          echo "Syncing layers to Zot registry via skopeo..."
+          skopeo copy \
+            --dest-creds "${{ secrets.ZOT_USERNAME }}:${{ secrets.ZOT_PASSWORD }}" \
             containers-storage:$IMAGE_PATH:$CLEAN_TAG \
             docker://$IMAGE_PATH:$CLEAN_TAG
-          skopeo copy --dest-tls-verify=false \
-            --dest-creds "${{ secrets.OWNER_REGISTRY_USER }}:${{ secrets.OWNER_REGISTRY_TOKEN }}" \
+            
+          skopeo copy \
+            --dest-creds "${{ secrets.ZOT_USERNAME }}:${{ secrets.ZOT_PASSWORD }}" \
             containers-storage:$IMAGE_PATH:latest \
             docker://$IMAGE_PATH:latest
-          echo "Images successfully pushed using skopeo."
+            
+          echo "Images successfully pushed to Zot using skopeo."
