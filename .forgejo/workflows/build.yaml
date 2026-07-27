@@ -40,8 +40,7 @@ jobs:
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
           
-          # Replace with your Zot registry URL (e.g., zot.yourdomain.com)
-          REGISTRY="${{ secrets.ZOT_REGISTRY }}"
+          REGISTRY="${{ vars.ZOT_REGISTRY }}"
           
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY/$REPO_LOWER"
