@@ -52,6 +52,9 @@ jobs:
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot \
             --label "org.opencontainers.image.source"="${{ env.FORGEJO_SERVER_URL }}/${{ env.FORGEJO_REPOSITORY }}" \
+            --label "org.opencontainers.image.revision"="$FORGEJO_SHA" \
+            --label "org.opencontainers.image.version"="${CLEAN_TAG#v}" \
+            --label "org.opencontainers.image.vendor"="${{ secrets.ZOT_USERNAME }}" \
             -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
           echo "Logging into Zot via skopeo..."
           echo "${{ secrets.ZOT_PASSWORD }}" | skopeo login --username "${{ secrets.ZOT_USERNAME }}" --password-stdin $REGISTRY
