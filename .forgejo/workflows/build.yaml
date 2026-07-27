@@ -39,14 +39,11 @@ jobs:
       - name: Build and Push Docker Image to Zot
         run: |
           CLEAN_TAG="${{ inputs.tag }}"
-          
           REGISTRY="${{ vars.ZOT_REGISTRY }}"
-          
           REPO_LOWER=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH="$REGISTRY/$REPO_LOWER"
           
           mkdir -p /etc/containers
-          
           cat <<EOF > /etc/containers/registries.conf
           [[registry]]
           location = "$REGISTRY"
@@ -54,10 +51,8 @@ jobs:
           
           echo "Initiating user-space compilation via isolated Chroot..."
           podman --storage-driver=vfs build --isolation=chroot -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
-          
           echo "Logging into Zot via skopeo..."
           echo "${{ secrets.ZOT_PASSWORD }}" | skopeo login --username "${{ secrets.ZOT_USERNAME }}" --password-stdin $REGISTRY
-          
           echo "Pushing images to Zot..."
           skopeo copy \
             containers-storage:$IMAGE_PATH:$CLEAN_TAG \
