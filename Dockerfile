@@ -4,7 +4,7 @@ WORKDIR /app
 RUN addgroup -S dcbot && adduser -S dcbot -G dcbot
 COPY package*.json ./
 RUN npm ci --only=production --no-fund --silent
-COPY --chown=dcbot:cdbot . .
+COPY --chown=dcbot:dcbot . .
 ENV DOTENV_DEBUG=false
 USER dcbot
 CMD ["npm", "run","start"]

@@ -58,6 +58,7 @@ jobs:
             --label "org.opencontainers.image.vendor"="${{ secrets.ZOT_USERNAME }}" \
             --label "org.opencontainers.image.authors"="$AUTHORS" \
             -t $IMAGE_PATH:$CLEAN_TAG -t $IMAGE_PATH:latest .
+          
           echo "Logging into Zot via skopeo..."
           echo "${{ secrets.ZOT_PASSWORD }}" | skopeo login --username "${{ secrets.ZOT_USERNAME }}" --password-stdin $REGISTRY
           echo "Pushing images to Zot..."
