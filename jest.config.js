@@ -1,4 +1,8 @@
 module.exports = {
+  verbose: false,
   collectCoverage: true,
-  coverageReporters: ["text", "lcov"]
+  reporters: [
+    'jest-silent-reporter'
+  ],
+  coverageReporters: ["text", "lcov","json","clover"],
 };
