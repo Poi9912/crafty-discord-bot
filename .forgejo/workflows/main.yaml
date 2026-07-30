@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'compose*.yaml'
   workflow_dispatch:
 jobs:
   tests:
