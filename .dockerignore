@@ -11,3 +11,5 @@ coverage
 README.md
 LICENSE
 jest.*.js
+Dockerfile*
+compose*.yaml
