@@ -1,4 +1,4 @@
-FROM node:26.5-alpine
+FROM node:26.8.1-alpine
 LABEL org.opencontainers.description="A Discord bot for your Crafty Managed Minecraft server"
 WORKDIR /app
 RUN addgroup -S dcbot && adduser -S dcbot -G dcbot
