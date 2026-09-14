@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Trigger webhook
         env:
-          WEBHOOK_URL: ${{ secrets.DOKPLOY_MC_BOT_WEBHOOK }}
+          WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK }}
         run: |
           if [ -z "$WEBHOOK_URL" ]; then
             echo "Error: WEBHOOK secret is not configured."
