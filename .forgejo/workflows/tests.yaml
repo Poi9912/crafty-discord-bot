@@ -7,7 +7,7 @@ on:
       - 'README.md'
       - '.gitignore'
       - 'LICENSE'
-      - 'compose*.yaml'
+      - '**/*compose*.yaml'
   workflow_call:
 jobs:
   test:
