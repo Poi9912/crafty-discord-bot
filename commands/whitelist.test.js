@@ -87,8 +87,7 @@ describe('whitelist command', () => {
 
     expect(interaction.deferReply).toHaveBeenCalledWith({ flags: [64] });
     expect(interaction.editReply).toHaveBeenCalledWith({
-      content: 'Player name is required for add/remove actions.',
-      flags: [64],
+      content: 'Player name is required for add/remove actions.'
     });
     expect(sendConsoleCommand).not.toHaveBeenCalled();
   });
@@ -141,16 +140,16 @@ describe('whitelist command', () => {
     interaction.member.roles.cache.has.mockReturnValue(true);
     interaction.options.getString.mockImplementation(name => (name === 'action' ? 'list' : null));
     sendConsoleCommandWithResponse.mockRejectedValue(new Error('Crafty failure'));
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     await whitelistCommand.execute(interaction);
 
     expect(interaction.editReply).toHaveBeenCalledWith({
       content: 'Failed to retrieve whitelist from Crafty.',
     });
-    expect(consoleLogSpy).toHaveBeenCalledWith('Whitelist error:', expect.any(Error));
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Whitelist list error:', expect.any(Error));
 
-    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   test('should handle sendConsoleCommand failure', async () => {
@@ -161,16 +160,15 @@ describe('whitelist command', () => {
       return null;
     });
     sendConsoleCommand.mockRejectedValue(new Error('Crafty failure'));
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     await whitelistCommand.execute(interaction);
 
     expect(interaction.editReply).toHaveBeenCalledWith({
-      content: 'Failed to send command to Crafty.',
-      flags: [64],
+      content: 'Failed to send command to Crafty.'
     });
-    expect(consoleLogSpy).toHaveBeenCalledWith('Error sending command to Crafty:', expect.any(Error));
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Error sending command to Crafty:', expect.any(Error));
 
-    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 });
