@@ -5,7 +5,7 @@ function whitelistContent(log) {
   const fullLog = Array.isArray(log) ? log.join('\n') : log;
   const match = fullLog.match(/whitelisted player.*?:\s*(.*)/i);
   let playerList = "None";
-  if (match && match[1]) {
+  if (match?.[1]) {
     playerList = match[1].trim();
   }
   return playerList;
@@ -15,7 +15,7 @@ function whitelistEnableDisable(log) {
   const fullLog = Array.isArray(log) ? log.join('\n') : log;
   const match = fullLog.match(/Whitelist is now turned\s*(on|off)\b/i);
   let whitelistStatus = "unknown";
-  if (match && match[1]) {
+  if (match?.[1]) {
     whitelistStatus = match[1].trim().toLowerCase();
   }
   console.log('Parsed whitelist status:', whitelistStatus);
@@ -56,14 +56,14 @@ module.exports = {
     const action = interaction.options.getString('action');
     const player = interaction.options.getString('player') || '';
 
-    if ((action === 'add' || action === 'remove') && !player) {
+    if ((['add','remove'].includes(action)) && !player) {
       return interaction.editReply({
         content: 'Player name is required for add/remove actions.',
         flags: [MessageFlags.Ephemeral]
       });
     }
 
-    if ((action === 'add' || action === 'remove') && player) {
+    if ((['add','remove'].includes(action))  && player) {
       try {
         await sendConsoleCommand(`whitelist ${action} ${player}`);
         return interaction.editReply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
@@ -83,7 +83,7 @@ module.exports = {
         return interaction.editReply({ content: 'Failed to retrieve whitelist from Crafty.' });
       }
     } 
-    if (action === 'on' || action === 'off') {
+    if (["on","off"].includes(action)) {
       try {
         const response = await sendConsoleCommandWithResponse(`whitelist ${action}`,200);
         const whitelistStatus = whitelistEnableDisable(response);
