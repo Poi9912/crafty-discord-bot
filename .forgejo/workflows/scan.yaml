@@ -34,12 +34,18 @@ jobs:
       - name: Gets project name from repo
         run: |
           PROJECT_NAME=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          echo "The project name for Dependency Track is: $PROJECT_NAME"
       - name: Upload SBOM to Dependency-Track
         env:
           DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
           DTRACK_API_URL: ${{ vars.DTRACK_API_URL }}
         run: |
-          curl -X "POST" "$DTRACK_API_URL/api/v1/bom" \
+          CALL_URL=$DTRACK_API_URL/api/v1/bom
+          echo "The call URL for culr is: $CALL_URL"
+          echo "The project version is: ${{ github.ref_name }}"
+          echo "The SBOM content is:"
+          cat sbom.json
+          curl -X "POST" "$CALL_URL" \
                -H 'Content-Type: multipart/form-data' \
                -H "X-Api-Key: $DTRACK_API_KEY" \
                -F "autoCreate=true" \
