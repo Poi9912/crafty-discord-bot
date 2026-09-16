@@ -10,6 +10,9 @@ on:
       - 'compose*.yaml'
   workflow_dispatch:
 jobs:
+  security:
+    uses: ./.forgejo/workflows/scan.yaml
+    secrets: inherit
   tests:
     uses: ./.forgejo/workflows/tests.yaml
     secrets: inherit

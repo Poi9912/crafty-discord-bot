@@ -1,10 +1,9 @@
 FROM node:26.8.1-alpine
 LABEL org.opencontainers.description="A Discord bot for your Crafty Managed Minecraft server"
 WORKDIR /app
-RUN addgroup -S dcbot && adduser -S dcbot -G dcbot
 COPY package*.json ./
 RUN npm ci --omit=dev --no-fund --silent
-COPY --chown=dcbot:dcbot . .
+COPY --chown=node:node . .
 ENV DOTENV_DEBUG=false
-USER dcbot
+USER node
 CMD ["npm", "run","start"]

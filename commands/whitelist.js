@@ -4,22 +4,71 @@ const { sendConsoleCommand, sendConsoleCommandWithResponse} = require('../contro
 function whitelistContent(log) {
   const fullLog = Array.isArray(log) ? log.join('\n') : log;
   const match = fullLog.match(/whitelisted player.*?:\s*(.*)/i);
-  let playerList = "None";
-  if (match && match[1]) {
-    playerList = match[1].trim();
-  }
-  return playerList;
+
+  return match?.[1]?.trim() || 'None';
 }
 
 function whitelistEnableDisable(log) {
   const fullLog = Array.isArray(log) ? log.join('\n') : log;
   const match = fullLog.match(/Whitelist is now turned\s*(on|off)\b/i);
-  let whitelistStatus = "unknown";
-  if (match && match[1]) {
-    whitelistStatus = match[1].trim().toLowerCase();
+
+  return match?.[1]?.toLowerCase() || 'unknown';
+}
+
+async function executeToggleAction(interaction, action) {
+  try {
+    const response = await sendConsoleCommandWithResponse(
+      `whitelist ${action}`,
+      200
+    );
+
+    const status = whitelistEnableDisable(response);
+    const content = status === 'unknown'
+      ? 'Whitelist status updated, but unable to confirm status from Crafty.'
+      : `Whitelist turned ${status}.`;
+
+    return interaction.editReply({ content });
+  } catch (error) {
+    console.error('Whitelist toggle error:', error);
+    return interaction.editReply({
+      content: 'Failed to update whitelist status on Crafty.'
+    });
   }
-  console.log('Parsed whitelist status:', whitelistStatus);
-  return whitelistStatus; //returns "on", "off" or "unknown"
+}
+
+async function executeListAction(interaction) {
+  try {
+    const response = await sendConsoleCommandWithResponse('whitelist list', 200);
+
+    return interaction.editReply({
+      content: `Whitelisted players: ${whitelistContent(response)}`
+    });
+  } catch (error) {
+    console.error('Whitelist list error:', error);
+    return interaction.editReply({
+      content: 'Failed to retrieve whitelist from Crafty.'
+    });
+  }
+}
+
+async function executePlayerAction(interaction, action, player) {
+  try {
+    await sendConsoleCommand(`whitelist ${action} ${player}`);
+
+    return interaction.editReply({
+      content: `Successfully executed: \`whitelist ${action} ${player}\``
+    });
+  } catch (error) {
+    console.error('Error sending command to Crafty:', error);
+    return interaction.editReply({
+      content: 'Failed to send command to Crafty.'
+    });
+  }
+}
+
+function hasAdminRole(interaction) {
+  const adminRoleId = process.env.DISCORD_MINECRAFT_ADMIN_ROLE;
+  return interaction.member.roles.cache.has(adminRoleId);
 }
 
 module.exports = {
@@ -45,58 +94,31 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
-    const adminRoleId = process.env.DISCORD_MINECRAFT_ADMIN_ROLE;
 
-    if (!interaction.member.roles.cache.has(adminRoleId)) {
+    if (!hasAdminRole(interaction)) {
       return interaction.editReply({
         content: 'You do not have the required permissions to manage the whitelist.'
       });
     }
 
     const action = interaction.options.getString('action');
-    const player = interaction.options.getString('player') || '';
+    const player = interaction.options.getString('player')?.trim();
 
-    if ((action === 'add' || action === 'remove') && !player) {
-      return interaction.editReply({
-        content: 'Player name is required for add/remove actions.',
-        flags: [MessageFlags.Ephemeral]
-      });
-    }
-
-    if ((action === 'add' || action === 'remove') && player) {
-      try {
-        await sendConsoleCommand(`whitelist ${action} ${player}`);
-        return interaction.editReply({ content: `Successfully executed: \`whitelist ${action} ${player}\`` });
-      } catch (error) {
-        console.log('Error sending command to Crafty:', error);
-        return interaction.editReply({ content: 'Failed to send command to Crafty.', flags: [MessageFlags.Ephemeral] });
+    if (['add', 'remove'].includes(action)) {
+      if (!player) {
+        return interaction.editReply({
+          content: 'Player name is required for add/remove actions.'
+        });
       }
+
+      return executePlayerAction(interaction, action, player);
     }
 
     if (action === 'list') {
-      try {
-        const response = await sendConsoleCommandWithResponse('whitelist list',200);
-        const playerList = whitelistContent(response);
-        return interaction.editReply({ content: `Whitelisted players: ${playerList}` });
-      } catch (error) {
-        console.log('Whitelist error:', error);
-        return interaction.editReply({ content: 'Failed to retrieve whitelist from Crafty.' });
-      }
-    } 
-    if (action === 'on' || action === 'off') {
-      try {
-        const response = await sendConsoleCommandWithResponse(`whitelist ${action}`,200);
-        const whitelistStatus = whitelistEnableDisable(response);
-        if (whitelistStatus === "unknown") {
-          return interaction.editReply({ content: 'Whitelist status updated, but unable to confirm status from Crafty, consult the server logs.' });
-        } else {
-          return interaction.editReply({ content: `Whitelist turned ${whitelistStatus}.` });
-        }
-      } catch (error) {
-        console.log('Whitelist error:', error);
-        return interaction.editReply({ content: 'Failed to update whitelist status on Crafty.' });
-      }
+      return executeListAction(interaction);
     }
+
+    return executeToggleAction(interaction, action);
   },
 
   whitelistEnableDisable,
