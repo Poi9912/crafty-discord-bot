@@ -39,10 +39,6 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
           trivy fs --format cyclonedx --output sbom.json .
 
-      - name: Gets project name from repo
-        run: |
-          PROJECT_NAME=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
-          echo "The project name for Dependency Track is: $PROJECT_NAME"
       - name: Upload SBOM to Dependency-Track
         env:
           DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
@@ -54,6 +50,6 @@ jobs:
                -H 'Content-Type: multipart/form-data' \
                -H "X-Api-Key: $DTRACK_API_KEY" \
                -F "autoCreate=true" \
-               -F "projectName=$PROJECT_NAME" \
+               -F "projectName=${GITHUB_REPOSITORY#*/}" \
                -F "projectVersion=${{ github.ref_name }}" \
                -F "bom=@sbom.json"
