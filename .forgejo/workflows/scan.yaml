@@ -1,5 +1,13 @@
 name: Security & Code Analysis
-on: [workflow_call, pull_request]
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - 'LICENSE'
+  workflow_call:
 
 jobs:
   scan:
