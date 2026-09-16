@@ -14,16 +14,16 @@ jobs:
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.BOT_TOKEN }}
+#          token: ${{ secrets.BOT_TOKEN }}
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: https://github.com/sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${SONAR_URL}
+          SONAR_HOST_URL: ${{ env.SONAR_URL }}
 
       - name: Generate SBOM
-        uses: aquasecurity/trivy-action@master
+        uses: https://github.com/aquasecurity/trivy-action@v0.35.0
         with:
           scan-type: 'fs'
           format: 'cyclonedx'
@@ -34,7 +34,7 @@ jobs:
           PROJECT_NAME=$(echo "${{ env.FORGEJO_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
       - name: Upload SBOM to Dependency-Track
         env:
-          DTRACK_API_URL: ${DTRACK_API_URL}
+          DTRACK_API_URL: ${{ env.DTRACK_API_URL }}
           DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
         run: |
           curl -X "POST" "$DTRACK_API_URL/api/v1/bom" \
