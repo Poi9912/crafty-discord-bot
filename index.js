@@ -103,7 +103,9 @@ client.on(Events.Warn, (info) => {
 });
 
 client.on(Events.ShardDisconnect, (closeEvent, shardId) => {
-  console.warn(`Shard ${shardId} disconnected: code=${closeEvent?.code} reason=${closeEvent?.reason}`);
+  console.warn(
+    `Shard ${shardId} disconnected: code=${closeEvent.code}`
+  );
 });
 
 client.on(Events.Invalidated, async () => {
