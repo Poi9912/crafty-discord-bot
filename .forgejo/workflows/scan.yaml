@@ -26,11 +26,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_URL }}
 
-      - name: Generate SBOM
-        env: 
-          STORAGE_DRIVER: vfs
+      - name: Generate SBOM via Trivy CLI
         run: |
-          podman run --rm -v .:/src -w /src ghcr.io/aquasecurity/trivy:latest fs --format cyclonedx --output sbom.json .
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+          trivy fs --format cyclonedx --output sbom.json .
 
       - name: Gets project name from repo
         run: |
