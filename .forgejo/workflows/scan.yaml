@@ -15,6 +15,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug URL Variables
+        run: |
+          echo "Sonar URL is '${{ vars.SONAR_URL }}'"
+          echo "Sonar URL is '${{ vars.DTRACK_API_URL }}'"
+
       - name: SonarQube Scan
         uses: https://github.com/sonarsource/sonarqube-scan-action@master
         env:
