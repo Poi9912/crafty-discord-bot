@@ -23,6 +23,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install dependencies for coverage
+        run: npm ci --include=dev
+      - name: Run tests
+        run: npm test
+
       - name: Debug URL Variables
         run: |
           echo "Sonar URL is '${{ vars.SONAR_URL }}'"
