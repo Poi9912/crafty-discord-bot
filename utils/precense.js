@@ -1,4 +1,4 @@
-const { Client, ActivityType } = require('discord.js');
+const { ActivityType } = require('discord.js');
 const { getServerStatus } = require('../controllers/crafty');
 
 async function updateBotPresence(client) {

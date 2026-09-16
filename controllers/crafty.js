@@ -1,7 +1,5 @@
 const axios = require('axios');
-const { stat } = require('fs');
-const https = require('https');
-const { uptime } = require('process');
+const https = require('node:https');
 
 //https for homelab and self-signed certs
 const httpsAgent = new https.Agent({rejectUnauthorized: false});
@@ -37,7 +35,7 @@ async function getServerStatus() {
       online: stats.running,
       players: `${stats.online}/${stats.max}`,
       version: stats.version,
-      empty: stats.online!=0? false : true,
+      empty: stats.online==0,
       cpu: stats.cpu,
       ram: memoryUsageGB,
       player_list: playerListResponse,
