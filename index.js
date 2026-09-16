@@ -1,6 +1,6 @@
 const { Client, GatewayIntentBits, Collection, REST, Routes, Events } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // Disable dotenv debug output in production
 if (process.env.ENV === 'PROD') {
@@ -103,7 +103,9 @@ client.on(Events.Warn, (info) => {
 });
 
 client.on(Events.ShardDisconnect, (closeEvent, shardId) => {
-  console.warn(`Shard ${shardId} disconnected: code=${closeEvent?.code} reason=${closeEvent?.reason}`);
+  console.warn(
+    `Shard ${shardId} disconnected: code=${closeEvent.code}`
+  );
 });
 
 client.on(Events.Invalidated, async () => {

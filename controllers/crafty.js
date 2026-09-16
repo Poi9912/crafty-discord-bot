@@ -1,7 +1,5 @@
 const axios = require('axios');
-const { stat } = require('fs');
-const https = require('https');
-const { uptime } = require('process');
+const https = require('node:https');
 
 //https for homelab and self-signed certs
 const httpsAgent = new https.Agent({rejectUnauthorized: false});
@@ -25,19 +23,19 @@ async function getServerStatus() {
   try {
     response = await crafty.get(`/api/v2/servers/${SERVER_ID}/stats`);
     const stats = response.data.data;
-    const cleanStringPlayers = stats.players.replace(/'/g, '"');
+    const cleanStringPlayers = stats.players.replaceAll('\'', '"');
     const playerListResponse = JSON.parse(cleanStringPlayers) || [];
     const description = stats.desc.replace(/§./g, '');
     const mtod = description.trim().replace(/\s+/g, ' ');
     const memoryUsageGB = (stats.mem / 1024 / 1024 / 1024 ).toFixed(2)+" GB";
     const utcDateStarted = new Date(stats.started.replace(' ', 'T') + 'Z');
     const msSinceLastBoot = new Date(Date.now() - utcDateStarted.getTime());
-    const timeSinceLastBoot = msSinceLastBoot.toISOString().substr(11, 8);
+    const timeSinceLastBoot = msSinceLastBoot.toISOString();
     return {
       online: stats.running,
       players: `${stats.online}/${stats.max}`,
       version: stats.version,
-      empty: stats.online!=0? false : true,
+      empty: stats.online==0,
       cpu: stats.cpu,
       ram: memoryUsageGB,
       player_list: playerListResponse,
