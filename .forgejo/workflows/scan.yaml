@@ -8,8 +8,8 @@ jobs:
       image: quay.io/podman/stable
     steps:
       - run: |
-          echo "prepare build environment"
-          dnf install -y node git skopeo
+          echo "prepare scan environment"
+          dnf install -y node git
 
       - uses: https://data.forgejo.org/actions/checkout@v4
         with:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate SBOM
         env: 
-          CONTAINERS_STORAGE_DRIVER: vfs
+          STORAGE_DRIVER: vfs
         run: |
           podman run --rm -v .:/src -w /src ghcr.io/aquasecurity/trivy:latest fs --format cyclonedx --output sbom.json .
 
