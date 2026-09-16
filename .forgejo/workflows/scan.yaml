@@ -27,11 +27,8 @@ jobs:
           SONAR_HOST_URL: ${{ vars.SONAR_URL }}
 
       - name: Generate SBOM
-        # uses: https://github.com/aquasecurity/trivy-action@v0.35.0
-        # with:
-        #   scan-type: 'fs'
-        #   format: 'cyclonedx'
-        #   output: 'sbom.json'
+        env: 
+          CONTAINERS_STORAGE_DRIVER: vfs
         run: |
           podman run --rm -v .:/src -w /src ghcr.io/aquasecurity/trivy:latest fs --format cyclonedx --output sbom.json .
 
