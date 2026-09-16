@@ -20,3 +20,12 @@ jobs:
         run: npm ci --include=dev
       - name: Run tests
         run: npm test
+
+      - name: Install Java (required for Sonar Scanner on Alpine)
+        run: apk add --no-cache openjdk17-jre
+
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_URL }}
+        run: npx sonarqube-scanner
